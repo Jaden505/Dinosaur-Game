@@ -1,0 +1,14 @@
+#dinosaur {
+  position: absolute;
+  left: 420px;
+  top: 400px;
+}
+
+#floor {
+  position: absolute;
+  left: 360px;
+  top: 440px;
+  width: 600px;
+  height: 1px;
+  clip: rect(0px,600px,200px,0px);
+}
