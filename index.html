@@ -2,17 +2,320 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="styles.css">
-    <title>Dinosaur game</title>
+    <link rel="stylesheet" href="style.css"/>
+    <title>Sorting Algorithm</title>
   </head>
-  <body onkeypress="smallJump(event);moveSide()">
-    <svg id="dinosaur">
-      <rect width="30" height ="55" id="dinosaur">
+  <body>
+    <div id="buttons">
+      <button id="Randomize" onclick="MyFunc()">Randomize</button>
+      <button id="Sort" onclick="ChangeColorRed()">Sort</button>
+    </div>
+    <h1 id="status">Neutral</h1>
+    <br>
+    <div id="rects">
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+      Sorry, your browser does not support inline SVG.
     </svg>
-    <svg id="floor">
-      <rect id="floor">
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
     </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    <svg width="10" id="rectup">
+      <rect width="10" id="rectdown" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>
+    </svg>
+    </div>
 
-    <script type="text/javascript" src="javascript.js"></script>
-    </body>
+    <script type="text/javascript" src="javascript.js"> </script>
+  </body>
 </html>
