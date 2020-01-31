@@ -14,6 +14,10 @@ let speedmove = 1
 let start = false
 let x = true
 
+let timebetween = 0
+let count = null
+let double = 0
+
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -62,22 +66,22 @@ async function moveSide() {
       backlen = 0
       floorpos2 = 960
       frontlen = 0
-      speedmove += 0.2
+      speedmove += 0.1
     }
   }
 }
 
-async function smallJump(e) {
+async function smallJump(e, type) {
   let spacebar = (e.keyCode ? e.keyCode : e.which)
   if (spacebar == 32 && jump == false) {
       jump = true
-      for (let i = 0; i < 20; i++) {
+      for (let i = 0; i < type; i++) {
         jumpheight -= 5
         dinosaur.style.top = jumpheight + 'px'
         await sleep(8)
       }
       await sleep(10)
-      for (let i = 0; i < 20; i++) {
+      for (let i = 0; i < type; i++) {
         jumpheight += 5
         dinosaur.style.top = jumpheight + 'px'
         await sleep(8)
@@ -85,3 +89,29 @@ async function smallJump(e) {
       jump = false
   }
 }
+
+document.addEventListener('keydown', async function (event) {
+  if (event.code == 'Space') {
+    double += 1
+    timebetween = 0
+    if (double > 1) {
+      console.log(timebetween)
+      clearInterval(count)
+      smallJump(event, 20)
+    }
+    count = setInterval(function(){
+      timebetween++;
+    }, 1);
+
+}})
+
+document.addEventListener('keyup', async function (event) {
+  if (event.code == 'Space') {
+    if (double < 2) {
+      console.log(timebetween, '2')
+      if (timebetween > 50) {smallJump(event, 30)}
+      else {smallJump(event, 20)}
+    }
+    double = 0
+    clearInterval(count)
+}})
