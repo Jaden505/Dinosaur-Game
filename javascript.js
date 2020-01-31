@@ -94,10 +94,11 @@ document.addEventListener('keydown', async function (event) {
   if (event.code == 'Space') {
     double += 1
     timebetween = 0
+
+    // If spacebar is held down bigjump
     if (double > 1) {
-      console.log(timebetween)
       clearInterval(count)
-      smallJump(event, 20)
+      smallJump(event, 30)
     }
     count = setInterval(function(){
       timebetween++;
@@ -107,9 +108,10 @@ document.addEventListener('keydown', async function (event) {
 
 document.addEventListener('keyup', async function (event) {
   if (event.code == 'Space') {
+    // If spacebar not held down
     if (double < 2) {
-      console.log(timebetween, '2')
-      if (timebetween > 50) {smallJump(event, 30)}
+      // Chooses small or big jump depending on time held down
+      if (timebetween > 30) {smallJump(event, 30)}
       else {smallJump(event, 20)}
     }
     double = 0
