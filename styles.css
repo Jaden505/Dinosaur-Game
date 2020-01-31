@@ -12,3 +12,13 @@
   height: 1px;
   clip: rect(0px,600px,200px,0px);
 }
+
+#floor2 {
+  position: absolute;
+  left: 960px;
+  top: 440px;
+  width: 600px;
+  height: 1px;
+  clip: rect(0px,0px,200px,0px);
+  fill: rgb(255, 0, 0);
+}
