@@ -17,6 +17,8 @@ let x = true
 let timebetween = 0
 let count = null
 let double = 0
+let done = true
+let already = false
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -71,15 +73,49 @@ async function moveSide() {
   }
 }
 
-async function smallJump(e, type) {
-  let spacebar = (e.keyCode ? e.keyCode : e.which)
-  if (spacebar == 32 && jump == false) {
+async function Up(e, type) {
+  console.log('1')
+  while (x) {
+    await sleep(1)
+  if (jump == false && done) {
       jump = true
+      done = false
       for (let i = 0; i < type; i++) {
         jumpheight -= 5
         dinosaur.style.top = jumpheight + 'px'
         await sleep(8)
       }
+      done = true
+      break
+  }
+}
+}
+
+async function AddUp(e, type) {
+  console.log('2')
+  while (x) {
+    await sleep(1)
+  if (done) {
+    console.log('5')
+      done = false
+      for (let i = 0; i < type; i++) {
+        jumpheight -= 5
+        dinosaur.style.top = jumpheight + 'px'
+        await sleep(8)
+      }
+    done = true
+    break
+  }
+}
+}
+
+async function Down(e, type) {
+  console.log('3')
+  while (x) {
+    await sleep(1)
+  if (done) {
+    console.log('6')
+    done = false
       await sleep(10)
       for (let i = 0; i < type; i++) {
         jumpheight += 5
@@ -87,33 +123,64 @@ async function smallJump(e, type) {
         await sleep(8)
       }
       jump = false
+      done = true
+      break
   }
+}
 }
 
 document.addEventListener('keydown', async function (event) {
-  if (event.code == 'Space') {
+  let left = window.getComputedStyle(document.getElementById("dinosaur")).top
+  if (event.code == 'Space' && left == '400px') {
     double += 1
     timebetween = 0
+    already = false
 
-    // If spacebar is held down bigjump
-    if (double > 1) {
-      clearInterval(count)
-      smallJump(event, 30)
-    }
+    if (double < 2) {
+      Up(event, 20)
+      console.log('single standard')
+      already = false
+      clearInterval()
+      count = null
+  }
+
+  if (double > 1 && already == false && jump == false) {
+    console.log('mutiple Big')
+    Up(event, 30)
+    Down(event, 30)
+    already = true
+    jump = false
+    console.log(count)
+    clearInterval()
+    count = null
+  }
+
+    // Timer
     count = setInterval(function(){
-      timebetween++;
-    }, 1);
-
+  timebetween++;
+  if (timebetween == 30 && double < 2 && already == false) {
+    console.log('single big')
+    AddUp(event, 10)
+    Down(event, 30)
+    already = true
+    clearInterval()
+    count = null
+  }
+}, 1);
 }})
 
 document.addEventListener('keyup', async function (event) {
-  if (event.code == 'Space') {
-    // If spacebar not held down
-    if (double < 2) {
+  let left = window.getComputedStyle(document.getElementById("dinosaur")).top
+  if (event.code == 'Space' && left == '400px') {
+    console.log(already, double)
       // Chooses small or big jump depending on time held down
-      if (timebetween > 30) {smallJump(event, 30)}
-      else {smallJump(event, 20)}
-    }
-    double = 0
-    clearInterval(count)
+      if (already == false && double < 2) {
+        console.log('single small')
+        Down(event, 20)
+      }
+      double = 0
+      clearInterval()
+      count = null
+      already = false
+
 }})
