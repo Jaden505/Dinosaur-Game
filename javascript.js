@@ -74,7 +74,6 @@ async function moveSide() {
 }
 
 async function Up(e, type) {
-  console.log('1')
   while (x) {
     await sleep(1)
   if (jump == false && done) {
@@ -92,11 +91,9 @@ async function Up(e, type) {
 }
 
 async function AddUp(e, type) {
-  console.log('2')
   while (x) {
     await sleep(1)
   if (done) {
-    console.log('5')
       done = false
       for (let i = 0; i < type; i++) {
         jumpheight -= 5
@@ -110,11 +107,9 @@ async function AddUp(e, type) {
 }
 
 async function Down(e, type) {
-  console.log('3')
   while (x) {
     await sleep(1)
-  if (done) {
-    console.log('6')
+  if (done && jump) {
     done = false
       await sleep(10)
       for (let i = 0; i < type; i++) {
@@ -135,27 +130,24 @@ document.addEventListener('keydown', async function (event) {
     double += 1
     timebetween = 0
     already = false
-console.log(double, '!!!!')
     if (double < 2) {
       Up(event, 20)
-      console.log('single standard')
       already = false
   }
 
   if (double > 1 && already == false && jump == false) {
-    console.log('mutiple Big')
     Up(event, 30)
     Down(event, 30)
     already = true
     jump = false
+    clearInterval(count)
   }
 
     // Timer
     timebetween = 0
     count = setInterval(function(){
   timebetween++;
-  if (timebetween == 30 && double < 2 && already == false) {
-    console.log('single big')
+  if (timebetween == 30 && double < 2 && already == false && jump) {
     AddUp(event, 10)
     Down(event, 30)
     already = true
@@ -165,14 +157,11 @@ console.log(double, '!!!!')
 }})
 
 document.addEventListener('keyup', async function (event) {
-  console.log(timebetween)
   timebetween = 0
   let left = window.getComputedStyle(document.getElementById("dinosaur")).top
   if (event.code == 'Space') {
       // Chooses small or big jump depending on time held down
-      console.log('now')
       if (already == false && double < 2) {
-        console.log('single small')
         Down(event, 20)
       }
       double = 0
