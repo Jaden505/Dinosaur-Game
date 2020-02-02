@@ -19,6 +19,7 @@ let count = null
 let double = 0
 let done = true
 let already = false
+let startops = false
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -35,6 +36,10 @@ async function moveSide() {
         backlen += speedmove
         floor.style.left = floorpos + 'px'
         floor.style.clip = 'rect(0px,600px,200px,' + backlen + 'px)'
+
+        if (startops) {
+        document.getElementById('follow').style.left = floorpos +'px'
+      }
 
         // Move line 2 to left and keep in same place
         floorpos2 -= speedmove
@@ -54,6 +59,11 @@ async function moveSide() {
         // Repeat but line 1 and 2 switched position
           floorpos -= speedmove
           backlen += speedmove
+
+          if (startops) {
+          document.getElementById('follow').style.left = floorpos +'px'
+        }
+
           floor.style.left = floorpos + 'px'
           floor.style.clip = 'rect(0px,' + backlen + 'px,200px,0px)'
 
@@ -69,9 +79,28 @@ async function moveSide() {
       floorpos2 = 960
       frontlen = 0
       speedmove += 0.1
+      startops = true
     }
   }
 }
+
+function RandomLandscape() {
+  let rects = document.getElementById('first').querySelectorAll('rect')
+  rects.forEach(element =>
+    element.style.display = 'none'
+  )
+
+  let random = rects[Math.floor(Math.random() * rects.length)];
+  random.style.display = 'block'
+  random.style.left = floorpos + 'px'
+  console.log(random)
+}
+
+RandomLandscape()
+
+
+
+
 
 async function Up(e, type) {
   while (x) {
@@ -82,7 +111,7 @@ async function Up(e, type) {
       for (let i = 0; i < type; i++) {
         jumpheight -= 5
         dinosaur.style.top = jumpheight + 'px'
-        await sleep(8)
+        await sleep(7)
       }
       done = true
       break
@@ -98,7 +127,7 @@ async function AddUp(e, type) {
       for (let i = 0; i < type; i++) {
         jumpheight -= 5
         dinosaur.style.top = jumpheight + 'px'
-        await sleep(8)
+        await sleep(7)
       }
     done = true
     break
@@ -111,11 +140,11 @@ async function Down(e, type) {
     await sleep(1)
   if (done && jump) {
     done = false
-      await sleep(10)
+      await sleep(80)
       for (let i = 0; i < type; i++) {
         jumpheight += 5
         dinosaur.style.top = jumpheight + 'px'
-        await sleep(8)
+        await sleep(7)
       }
       jump = false
       done = true
@@ -130,14 +159,17 @@ document.addEventListener('keydown', async function (event) {
     double += 1
     timebetween = 0
     already = false
+
+    // Standerd go up
     if (double < 2) {
-      Up(event, 20)
+      Up(event, 30)
       already = false
   }
 
+  // When spacebar is held down
   if (double > 1 && already == false && jump == false) {
-    Up(event, 30)
-    Down(event, 30)
+    Up(event, 40)
+    Down(event, 40)
     already = true
     jump = false
     clearInterval(count)
@@ -149,7 +181,7 @@ document.addEventListener('keydown', async function (event) {
   timebetween++;
   if (timebetween == 30 && double < 2 && already == false && jump) {
     AddUp(event, 10)
-    Down(event, 30)
+    Down(event, 40)
     already = true
     clearInterval(count)
   }
@@ -160,9 +192,10 @@ document.addEventListener('keyup', async function (event) {
   timebetween = 0
   let left = window.getComputedStyle(document.getElementById("dinosaur")).top
   if (event.code == 'Space') {
+
       // Chooses small or big jump depending on time held down
       if (already == false && double < 2) {
-        Down(event, 20)
+        Down(event, 30)
       }
       double = 0
       already = true

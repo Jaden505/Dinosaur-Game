@@ -22,3 +22,38 @@
   clip: rect(0px,0px,200px,0px);
   fill: rgb(255, 0, 0);
 }
+
+#ob1 {
+  position: absolute;
+  top: 425px;
+}
+
+#ob11 {
+  position: absolute;
+  top: 425px;
+}
+
+#ob111 {
+  position: absolute;
+  top: 425px;
+}
+
+#ob2 {
+  position: absolute;
+  top: 410px;
+}
+
+#ob22 {
+  position: absolute;
+  top: 410px;
+}
+
+#ob222 {
+  position: absolute;
+  top: 410px;
+}
+
+#follow {
+  position: absolute;
+  top: 435px;
+}
