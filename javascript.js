@@ -21,15 +21,28 @@ let done = true
 let already = false
 let startops = false
 
+let rects = document.getElementById('first').querySelectorAll('rect')
+let random = rects[Math.floor(Math.random() * rects.length)]
+let random2 = rects[Math.floor(Math.random() * rects.length)]
+let moveob = 360
+let moveob2 = 360
+let randnr1 = Math.floor((Math.random() * 500) + 100)
+let randnr2 = Math.floor((Math.random() * 500) + 100);
+
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
+
+rects.forEach(element =>
+  element.style.display = 'block'
+)
 
 async function moveSide() {
   // Loop floor
   if (start == false) {
     start = true
     while (x) {
+      AllRandoms()
       while (frontlen <= 600) {
         // Move line 1 to left and keep in same place
         floorpos -= speedmove
@@ -37,15 +50,13 @@ async function moveSide() {
         floor.style.left = floorpos + 'px'
         floor.style.clip = 'rect(0px,600px,200px,' + backlen + 'px)'
 
-        if (startops) {
-        document.getElementById('follow').style.left = floorpos +'px'
-      }
-
         // Move line 2 to left and keep in same place
         floorpos2 -= speedmove
         frontlen += speedmove
         floor2.style.clip = 'rect(0px,' + frontlen + 'px,200px,0px)'
         floor2.style.left = floorpos2 + 'px'
+
+        RandomLandscape()
 
         await sleep(1)
       }
@@ -54,15 +65,13 @@ async function moveSide() {
       backlen = 0
       floorpos2 = 360
       frontlen = 0
+      startops = true
+      moveob = 960
 
       while (backlen <= 600) {
         // Repeat but line 1 and 2 switched position
           floorpos -= speedmove
           backlen += speedmove
-
-          if (startops) {
-          document.getElementById('follow').style.left = floorpos +'px'
-        }
 
           floor.style.left = floorpos + 'px'
           floor.style.clip = 'rect(0px,' + backlen + 'px,200px,0px)'
@@ -72,6 +81,8 @@ async function moveSide() {
           floor2.style.left = floorpos2 + 'px'
           floor2.style.clip = 'rect(0px,600px,200px,' + frontlen + 'px)'
 
+          RandomLandscape()
+
           await sleep(1)
       }
       floorpos = 360
@@ -79,25 +90,49 @@ async function moveSide() {
       floorpos2 = 960
       frontlen = 0
       speedmove += 0.1
-      startops = true
     }
   }
 }
 
-function RandomLandscape() {
-  let rects = document.getElementById('first').querySelectorAll('rect')
+
+function AllRandoms() {
+  rects = document.getElementById('first').querySelectorAll('svg')
+  random = rects[Math.floor(Math.random() * rects.length)]
+  random2 = rects[Math.floor(Math.random() * rects.length)]
+  randnr1 = Math.floor((Math.random() * 500) + 100)
+  randnr2 = Math.floor((Math.random() * 500) + 100)
+  while (random2 == random) {random2 = rects[Math.floor(Math.random() * rects.length)]}
+
   rects.forEach(element =>
     element.style.display = 'none'
   )
 
-  let random = rects[Math.floor(Math.random() * rects.length)];
-  random.style.display = 'block'
-  random.style.left = floorpos + 'px'
-  console.log(random)
+if (startops) {random.style.display = 'block'}
+else {random.style.display = 'none'}
 }
 
-RandomLandscape()
+function RandomLandscape() {
+  moveob -= speedmove
+  if (startops) {
+  random.style.left = moveob + 'px'
+    }
+  if (moveob < 360 || moveob > 960) {
+    random.style.display = 'none'
+    }
+  else {
+  random.style.display = 'block'
+    }
 
+  if (startops) {
+  random2.style.left = moveob+ randnr1 + 'px'
+    }
+  if (moveob2 < 360 || moveob > 960) {
+  random2.style.display = 'none'
+    }
+  else {
+  random2.style.display = 'block'
+    }
+}
 
 
 
