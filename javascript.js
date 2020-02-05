@@ -32,6 +32,8 @@ let randnr2 = Math.floor((Math.random() * 500) + 100);
 let randomnosvg = random.querySelector('rect')
 let rect1 = {x: 420, y: jumpheight, width: 30, height: 55} // Dinosaur
 let rect2 = {x: moveob, y: randomnosvg.getAttribute('top'), width: randomnosvg.getAttribute('width'), height: randomnosvg.getAttribute('height')} // Random obstacle
+let style = window.getComputedStyle(random)
+let toprand = style.getPropertyValue('top')
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -43,14 +45,18 @@ rects.forEach(element =>
 
 function CheckCollision() {
   randomnosvg = random.querySelector('rect')
+  style = window.getComputedStyle(random)
+  toprand = style.getPropertyValue('top')
+
   rect1 = {x: 420, y: jumpheight, width: 30, height: 55} // Dinosaur
-  rect2 = {x: moveob, y: 420, width: randomnosvg.getAttribute('width'), height: randomnosvg.getAttribute('height')} // Random obstacle
+  rect2 = {x: moveob, y: parseInt(toprand), width: randomnosvg.getAttribute('width') * .5, height: randomnosvg.getAttribute('height')} // Random obstacle
 
   if (rect1.x < rect2.x + rect2.width &&
      rect1.x + rect1.width > rect2.x &&
      rect1.y < rect2.y + rect2.height &&
      rect1.y + rect1.height > rect2.y) {
       console.log('collision detected!')
+      x = false
   }
 }
 
