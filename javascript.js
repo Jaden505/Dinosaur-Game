@@ -29,6 +29,9 @@ let moveob2 = 360
 let randnr1 = Math.floor((Math.random() * 500) + 100)
 let randnr2 = Math.floor((Math.random() * 500) + 100);
 
+let randomnosvg = random.querySelector('rect')
+let rect1 = {x: 420, y: jumpheight, width: 30, height: 55} // Dinosaur
+let rect2 = {x: moveob, y: randomnosvg.getAttribute('top'), width: randomnosvg.getAttribute('width'), height: randomnosvg.getAttribute('height')} // Random obstacle
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -37,6 +40,19 @@ function sleep(ms) {
 rects.forEach(element =>
   element.style.display = 'none'
 )
+
+function CheckCollision() {
+  randomnosvg = random.querySelector('rect')
+  rect1 = {x: 420, y: jumpheight, width: 30, height: 55} // Dinosaur
+  rect2 = {x: moveob, y: 420, width: randomnosvg.getAttribute('width'), height: randomnosvg.getAttribute('height')} // Random obstacle
+
+  if (rect1.x < rect2.x + rect2.width &&
+     rect1.x + rect1.width > rect2.x &&
+     rect1.y < rect2.y + rect2.height &&
+     rect1.y + rect1.height > rect2.y) {
+      console.log('collision detected!')
+  }
+}
 
 async function moveSide() {
   // Loop floor
@@ -57,6 +73,7 @@ async function moveSide() {
         floor2.style.left = floorpos2 + 'px'
 
         RandomLandscape()
+        CheckCollision()
 
         await sleep(1)
       }
@@ -81,6 +98,7 @@ async function moveSide() {
           floor2.style.clip = 'rect(0px,600px,200px,' + frontlen + 'px)'
 
           RandomLandscape()
+          CheckCollision()
 
           await sleep(1)
       }
