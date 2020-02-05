@@ -29,8 +29,6 @@ let moveob2 = 360
 let randnr1 = Math.floor((Math.random() * 500) + 100)
 let randnr2 = Math.floor((Math.random() * 500) + 100);
 
-random.style.left = moveob + 'px'
-console.log(random)
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -108,13 +106,14 @@ function RandomLandscape() {
   moveob -= speedmove
   random.style.left = moveob + 'px'
 
-  if (moveob < 360 || moveob > 960) {
+  if (moveob <= 360 || moveob >= 960) {
     random.style.display = 'none'
     }
   else {
   random.style.display = 'block'
     }
   if (moveob <= 360) {
+    random = rects[Math.floor(Math.random() * rects.length)]
     randnr1 = Math.floor((Math.random() * 500) + 100) + 960
     moveob = randnr1
   }
