@@ -34,6 +34,8 @@ let rect1 = {x: 420, y: jumpheight, width: 30, height: 55} // Dinosaur
 let rect2 = {x: moveob, y: randomnosvg.getAttribute('top'), width: randomnosvg.getAttribute('width'), height: randomnosvg.getAttribute('height')} // Random obstacle
 let style = window.getComputedStyle(random)
 let toprand = style.getPropertyValue('top')
+let backlenrand = randomnosvg.getAttribute('width')
+let frontlenrand = 0
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -117,30 +119,31 @@ async function moveSide() {
   }
 }
 
-function AllRandoms() {
-  rects = document.getElementById('first').querySelectorAll('svg')
-  random = rects[Math.floor(Math.random() * rects.length)]
-  random2 = rects[Math.floor(Math.random() * rects.length)]
-  randnr1 = Math.floor((Math.random() * 500) + 100) + 960
-  randnr2 = Math.floor((Math.random() * 500) + 100) + 960
-  while (random2 == random) {random2 = rects[Math.floor(Math.random() * rects.length)]}
-}
-
-function RandomLandscape() {
+async function RandomLandscape() {
   moveob -= speedmove
   random.style.left = moveob + 'px'
 
-  if (moveob <= 360 || moveob >= 960) {
-    random.style.display = 'none'
+  if (moveob >= 360 && moveob <= 960) {
+    frontlenrand += speedmove
+    random.style.clip = 'rect(0px,'+ frontlenrand +'px,100px,0px)'
     }
-  else {
-  random.style.display = 'block'
-    }
+
   if (moveob <= 360) {
+    backlenrand += speedmove
+    random.style.clip = 'rect(0px,100px,100px,'+ backlenrand +'px)'
+  }
+
+  if (moveob <= 260) {
+    console.log('to back')
+    // Resets values
     random = rects[Math.floor(Math.random() * rects.length)]
     randnr1 = Math.floor((Math.random() * 500) + 100) + 960
     moveob = randnr1
+    random.style.display = 'block'
+    backlenrand = 0
+    frontlenrand = 0
   }
+  if (moveob > 960) {random.style.clip = 'rect(0px,100px,100px,100px)'}
 }
 
 async function Up(e, type) {
