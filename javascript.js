@@ -23,11 +23,8 @@ let startops = false
 
 let rects = document.getElementById('first').querySelectorAll('svg')
 let random = rects[Math.floor(Math.random() * rects.length)]
-let random2 = rects[Math.floor(Math.random() * rects.length)]
 let moveob = 360
-let moveob2 = 360
 let randnr1 = Math.floor((Math.random() * 500) + 100)
-let randnr2 = Math.floor((Math.random() * 500) + 100)
 
 let randomnosvg = random.querySelector('rect')
 let rect1 = {x: 420, y: jumpheight, width: 30, height: 55} // Dinosaur
@@ -36,14 +33,6 @@ let style = window.getComputedStyle(random)
 let toprand = style.getPropertyValue('top')
 let backlenrand = randomnosvg.getAttribute('width')
 let frontlenrand = 0
-
-let randomnosvg2 = random.querySelector('rect')
-let rect12 = {x: 420, y: jumpheight, width: 30, height: 55} // Dinosaur
-let rect22 = {x: moveob, y: randomnosvg.getAttribute('top'), width: randomnosvg.getAttribute('width'), height: randomnosvg.getAttribute('height')} // Random obstacle
-let style2 = window.getComputedStyle(random)
-let toprand2 = style.getPropertyValue('top')
-let backlenrand2 = randomnosvg.getAttribute('width')
-let frontlenrand2 = 0
 
 let score = document.getElementById('score')
 let scorenr = 0
@@ -58,6 +47,15 @@ rects.forEach(element =>
   element.style.display = 'none'
 )
 
+function Neurons() {
+  //speedmove
+  //randomnosvg.getAttribute('height')
+  //moveob - 420
+
+  //smalljump
+  //bigjump
+}
+
 function CheckCollision() {
   randomnosvg = random.querySelector('rect')
   style = window.getComputedStyle(random)
@@ -70,24 +68,6 @@ function CheckCollision() {
      rect1.x + rect1.width > rect2.x &&
      rect1.y < rect2.y + rect2.height &&
      rect1.y + rect1.height > rect2.y) {
-      console.log('collision detected!')
-      x = false
-      start = false
-  }
-}
-
-function CheckCollision2() {
-  randomnosvg2 = random.querySelector('rect')
-  style2 = window.getComputedStyle(random)
-  toprand2 = style.getPropertyValue('top')
-
-  rect12 = {x: 420, y: jumpheight, width: 30, height: 55} // Dinosaur
-  rect22 = {x: moveob2, y: parseInt(toprand2), width: randomnosvg2.getAttribute('width') * .5, height: randomnosvg2.getAttribute('height')} // Random obstacle
-
-  if (rect12.x < rect22.x + rect22.width &&
-     rect12.x + rect12.width > rect22.x &&
-     rect12.y < rect22.y + rect22.height &&
-     rect12.y + rect12.height > rect22.y) {
       console.log('collision detected!')
       x = false
       start = false
@@ -114,9 +94,7 @@ async function moveSide() {
         floor2.style.left = floorpos2 + 'px'
 
         RandomLandscape()
-        RandomLandscape2()
         CheckCollision()
-        CheckCollision2()
 
         await sleep(1)
       }
@@ -141,9 +119,7 @@ async function moveSide() {
           floor2.style.clip = 'rect(0px,600px,200px,' + frontlen + 'px)'
 
           RandomLandscape()
-          RandomLandscape2()
           CheckCollision()
-          CheckCollision2()
 
           await sleep(1)
       }
@@ -193,32 +169,6 @@ async function RandomLandscape() {
     frontlenrand = 0
   }
   if (moveob > 960) {random.style.clip = 'rect(0px,100px,100px,100px)'}
-}
-
-async function RandomLandscape2() {
-  moveob2 -= speedmove
-  random2.style.left = moveob2 + 'px'
-
-  if (moveob2 >= 360 && moveob2 <= 960) {
-    frontlenrand2 += speedmove
-    random2.style.clip = 'rect(0px,'+ frontlenrand2 +'px,100px,0px)'
-    }
-
-  if (moveob2 <= 360) {
-    backlenrand2 += speedmove
-    random2.style.clip = 'rect(0px,100px,100px,'+ backlenrand2 +'px)'
-  }
-
-  if (moveob2 <= 260) {
-    // Resets values
-    random22 = rects[Math.floor(Math.random() * rects.length)]
-    randnr12 = Math.floor((Math.random() * 500) + 100) + 960
-    moveob2 = randnr12
-    random2.style.display = 'block'
-    backlenrand2 = 0
-    frontlenrand2 = 0
-  }
-  if (moveob2 > 960) {random2.style.clip = 'rect(0px,100px,100px,100px)'}
 }
 
 async function Up(e, type) {
