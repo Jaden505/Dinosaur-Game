@@ -2,6 +2,7 @@
   position: absolute;
   left: 420px;
   top: 400px;
+  clip: rect(0px,600px,200px,0px);
 }
 
 #floor {
@@ -23,32 +24,44 @@
   fill: rgb(255, 0, 0);
 }
 
+#score {
+  position: absolute;
+  top: 220px;
+  left: 900px;
+}
+
 #ob1 {
   position: absolute;
   top: 420px;
+  clip: inherit;
 }
 
 #ob11 {
   position: absolute;
   top: 420px;
+  clip: inherit;
 }
 
 #ob111 {
   position: absolute;
   top: 420px;
+  clip: inherit;
 }
 
 #ob2 {
   position: absolute;
   top: 405px;
+  clip: inherit;
 }
 
 #ob22 {
   position: absolute;
   top: 405px;
+  clip: inherit;
 }
 
 #ob222 {
   position: absolute;
   top: 405px;
+  clip: inherit;
 }

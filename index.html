@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="styles.css">
     <title>Dinosaur game</title>
   </head>
-  <body onkeypress="moveSide()">
+  <body onkeypress="moveSide();Score()">
   <svg id="dinosaur">
     <rect width="30" height ="55" id="dinosaur">
   </svg>
@@ -15,6 +15,7 @@
   <svg id="floor2">
     <rect id="floor2">
   </svg>
+  <h2 id="score">00000</h2>
 
   <div id="first">
     <svg id="ob1">

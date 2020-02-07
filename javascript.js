@@ -27,7 +27,7 @@ let random2 = rects[Math.floor(Math.random() * rects.length)]
 let moveob = 360
 let moveob2 = 360
 let randnr1 = Math.floor((Math.random() * 500) + 100)
-let randnr2 = Math.floor((Math.random() * 500) + 100);
+let randnr2 = Math.floor((Math.random() * 500) + 100)
 
 let randomnosvg = random.querySelector('rect')
 let rect1 = {x: 420, y: jumpheight, width: 30, height: 55} // Dinosaur
@@ -36,6 +36,19 @@ let style = window.getComputedStyle(random)
 let toprand = style.getPropertyValue('top')
 let backlenrand = randomnosvg.getAttribute('width')
 let frontlenrand = 0
+
+let randomnosvg2 = random.querySelector('rect')
+let rect12 = {x: 420, y: jumpheight, width: 30, height: 55} // Dinosaur
+let rect22 = {x: moveob, y: randomnosvg.getAttribute('top'), width: randomnosvg.getAttribute('width'), height: randomnosvg.getAttribute('height')} // Random obstacle
+let style2 = window.getComputedStyle(random)
+let toprand2 = style.getPropertyValue('top')
+let backlenrand2 = randomnosvg.getAttribute('width')
+let frontlenrand2 = 0
+
+let score = document.getElementById('score')
+let scorenr = 0
+let zero = '0'
+let startscore = false
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -59,6 +72,25 @@ function CheckCollision() {
      rect1.y + rect1.height > rect2.y) {
       console.log('collision detected!')
       x = false
+      start = false
+  }
+}
+
+function CheckCollision2() {
+  randomnosvg2 = random.querySelector('rect')
+  style2 = window.getComputedStyle(random)
+  toprand2 = style.getPropertyValue('top')
+
+  rect12 = {x: 420, y: jumpheight, width: 30, height: 55} // Dinosaur
+  rect22 = {x: moveob2, y: parseInt(toprand2), width: randomnosvg2.getAttribute('width') * .5, height: randomnosvg2.getAttribute('height')} // Random obstacle
+
+  if (rect12.x < rect22.x + rect22.width &&
+     rect12.x + rect12.width > rect22.x &&
+     rect12.y < rect22.y + rect22.height &&
+     rect12.y + rect12.height > rect22.y) {
+      console.log('collision detected!')
+      x = false
+      start = false
   }
 }
 
@@ -66,8 +98,9 @@ async function moveSide() {
   // Loop floor
   if (start == false) {
     start = true
+    // Movement loop
     while (x) {
-      while (frontlen <= 600) {
+      while (frontlen <= 600 && start) {
         // Move line 1 to left and keep in same place
         floorpos -= speedmove
         backlen += speedmove
@@ -81,7 +114,9 @@ async function moveSide() {
         floor2.style.left = floorpos2 + 'px'
 
         RandomLandscape()
+        RandomLandscape2()
         CheckCollision()
+        CheckCollision2()
 
         await sleep(1)
       }
@@ -92,7 +127,7 @@ async function moveSide() {
       frontlen = 0
       startops = true
 
-      while (backlen <= 600) {
+      while (backlen <= 600 && start) {
         // Repeat but line 1 and 2 switched position
           floorpos -= speedmove
           backlen += speedmove
@@ -106,7 +141,9 @@ async function moveSide() {
           floor2.style.clip = 'rect(0px,600px,200px,' + frontlen + 'px)'
 
           RandomLandscape()
+          RandomLandscape2()
           CheckCollision()
+          CheckCollision2()
 
           await sleep(1)
       }
@@ -115,6 +152,19 @@ async function moveSide() {
       floorpos2 = 960
       frontlen = 0
       speedmove += 0.1
+    }
+  }
+}
+
+async function Score() {
+  if (startscore == false) {
+    startscore = true
+  // Score loop
+  while (x) {
+    scorenr += 1
+    await sleep(100)
+    amountzeros = 5 - scorenr.toString().length
+    score.innerHTML = zero.repeat(amountzeros) + scorenr
     }
   }
 }
@@ -134,7 +184,6 @@ async function RandomLandscape() {
   }
 
   if (moveob <= 260) {
-    console.log('to back')
     // Resets values
     random = rects[Math.floor(Math.random() * rects.length)]
     randnr1 = Math.floor((Math.random() * 500) + 100) + 960
@@ -146,6 +195,32 @@ async function RandomLandscape() {
   if (moveob > 960) {random.style.clip = 'rect(0px,100px,100px,100px)'}
 }
 
+async function RandomLandscape2() {
+  moveob2 -= speedmove
+  random2.style.left = moveob2 + 'px'
+
+  if (moveob2 >= 360 && moveob2 <= 960) {
+    frontlenrand2 += speedmove
+    random2.style.clip = 'rect(0px,'+ frontlenrand2 +'px,100px,0px)'
+    }
+
+  if (moveob2 <= 360) {
+    backlenrand2 += speedmove
+    random2.style.clip = 'rect(0px,100px,100px,'+ backlenrand2 +'px)'
+  }
+
+  if (moveob2 <= 260) {
+    // Resets values
+    random22 = rects[Math.floor(Math.random() * rects.length)]
+    randnr12 = Math.floor((Math.random() * 500) + 100) + 960
+    moveob2 = randnr12
+    random2.style.display = 'block'
+    backlenrand2 = 0
+    frontlenrand2 = 0
+  }
+  if (moveob2 > 960) {random2.style.clip = 'rect(0px,100px,100px,100px)'}
+}
+
 async function Up(e, type) {
   while (x) {
     await sleep(1)
@@ -153,9 +228,11 @@ async function Up(e, type) {
       jump = true
       done = false
       for (let i = 0; i < type; i++) {
+        if (start) {
         jumpheight -= 5
         dinosaur.style.top = jumpheight + 'px'
         await sleep(7)
+      }
       }
       done = true
       break
@@ -169,9 +246,11 @@ async function AddUp(e, type) {
   if (done) {
       done = false
       for (let i = 0; i < type; i++) {
+        if (start) {
         jumpheight -= 5
         dinosaur.style.top = jumpheight + 'px'
         await sleep(7)
+      }
       }
     done = true
     break
@@ -186,9 +265,11 @@ async function Down(e, type) {
     done = false
       await sleep(80)
       for (let i = 0; i < type; i++) {
+        if (start) {
         jumpheight += 5
         dinosaur.style.top = jumpheight + 'px'
         await sleep(7)
+      }
       }
       jump = false
       done = true
