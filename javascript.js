@@ -40,6 +40,9 @@ let scorenr = 0
 let zero = '0'
 let startscore = false
 
+let data = []
+let choices = [20, 30]
+
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -48,16 +51,42 @@ rects.forEach(element =>
   element.style.display = 'none'
 )
 
-function Neurons() {
+document.querySelectorAll('.rep').forEach((item, i) => {
+  item.style.left = '420px'
+  item.style.top = '400px'
+});
+
+
+async function Neurons() {
   //speedmove
   //randomnosvg.getAttribute('height')
   //moveob - 420
 
   //smalljump
   //bigjump
+  while (x) {
+  randtm =  Math.floor((Math.random() * 800) + 200)
+  choicebm = choices[Math.floor(Math.random() * choices.length)]
+  await sleep(randtm)
+  if (jump == false) {
+    domRectdino = dinosaur.getBoundingClientRect();
+    domRectrand = random.getBoundingClientRect();
+    jumppredict = ((domRectdino.x - domRectrand.x) + (domRectdino.y - domRectrand.y)) / speedmove
+    console.log(jumppredict)
+    Up(event, choicebm, dinosaur)
+    Down(event, choicebm, dinosaur)
+    document.querySelectorAll('.rep').forEach((item, i) => {
+      if (item.tagName != 'rect') {
+        Up(event, 20, item)
+        Down(event, 20, item)
+      }
+    })
+    }
+  }
 }
+Neurons()
 
-async function CheckCollision() {
+async function CheckCollision(who) {
   randomnosvg = random.querySelector('rect')
   style = window.getComputedStyle(random)
   toprand = style.getPropertyValue('top')
@@ -174,7 +203,7 @@ async function RandomLandscape() {
   if (moveob > 960) {random.style.clip = 'rect(0px,100px,100px,100px)'}
 }
 
-async function Up(e, type) {
+async function Up(e, type, who) {
   while (x) {
     await sleep(1)
   if (jump == false && done) {
@@ -183,7 +212,7 @@ async function Up(e, type) {
       for (let i = 0; i < type; i++) {
         if (start) {
         jumpheight -= 5
-        dinosaur.style.top = jumpheight + 'px'
+        who.style.top = jumpheight + 'px'
         await sleep(7)
       }
       }
@@ -193,7 +222,7 @@ async function Up(e, type) {
 }
 }
 
-async function Down(e, type) {
+async function Down(e, type, who) {
   while (x) {
     await sleep(1)
   if (done && jump) {
@@ -202,7 +231,7 @@ async function Down(e, type) {
       for (let i = 0; i < type; i++) {
         if (start) {
         jumpheight += 5
-        dinosaur.style.top = jumpheight + 'px'
+        who.style.top = jumpheight + 'px'
         await sleep(7)
       }
       }
