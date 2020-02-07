@@ -1,3 +1,4 @@
+async function Program() {
 let jump = false
 let dinosaur = document.getElementById('dinosaur')
 let jumpheight = 400
@@ -56,7 +57,7 @@ function Neurons() {
   //bigjump
 }
 
-function CheckCollision() {
+async function CheckCollision() {
   randomnosvg = random.querySelector('rect')
   style = window.getComputedStyle(random)
   toprand = style.getPropertyValue('top')
@@ -68,9 +69,11 @@ function CheckCollision() {
      rect1.x + rect1.width > rect2.x &&
      rect1.y < rect2.y + rect2.height &&
      rect1.y + rect1.height > rect2.y) {
-      console.log('collision detected!')
       x = false
       start = false
+      await sleep(1000)
+
+      Program()
   }
 }
 
@@ -128,8 +131,8 @@ async function moveSide() {
       floorpos2 = 960
       frontlen = 0
       speedmove += 0.1
-    }
   }
+}
 }
 
 async function Score() {
@@ -190,24 +193,6 @@ async function Up(e, type) {
 }
 }
 
-async function AddUp(e, type) {
-  while (x) {
-    await sleep(1)
-  if (done) {
-      done = false
-      for (let i = 0; i < type; i++) {
-        if (start) {
-        jumpheight -= 5
-        dinosaur.style.top = jumpheight + 'px'
-        await sleep(7)
-      }
-      }
-    done = true
-    break
-  }
-}
-}
-
 async function Down(e, type) {
   while (x) {
     await sleep(1)
@@ -228,51 +213,8 @@ async function Down(e, type) {
 }
 }
 
-document.addEventListener('keydown', async function (event) {
-  let left = window.getComputedStyle(document.getElementById("dinosaur")).top
-  if (event.code == 'Space' && left == '400px') {
-    double += 1
-    timebetween = 0
-    already = false
+moveSide()
+Score()
+}
 
-    // Standerd go up
-    if (double < 2) {
-      Up(event, 30)
-      already = false
-  }
-
-  // When spacebar is held down
-  if (double > 1 && already == false && jump == false) {
-    Up(event, 40)
-    Down(event, 40)
-    already = true
-    jump = false
-    clearInterval(count)
-  }
-
-    // Timer
-    timebetween = 0
-    count = setInterval(function(){
-  timebetween++;
-  if (timebetween == 30 && double < 2 && already == false && jump) {
-    AddUp(event, 10)
-    Down(event, 40)
-    already = true
-    clearInterval(count)
-  }
-}, 1);
-}})
-
-document.addEventListener('keyup', async function (event) {
-  timebetween = 0
-  let left = window.getComputedStyle(document.getElementById("dinosaur")).top
-  if (event.code == 'Space') {
-
-      // Chooses small or big jump depending on time held down
-      if (already == false && double < 2) {
-        Down(event, 30)
-      }
-      double = 0
-      already = true
-      clearInterval(count)
-}})
+Program()
