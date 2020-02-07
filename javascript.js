@@ -52,7 +52,7 @@ rects.forEach(element =>
 )
 
 document.querySelectorAll('.rep').forEach((item, i) => {
-  item.style.left = '420px'
+  item.style.left = '520px'
   item.style.top = '400px'
 });
 
@@ -79,6 +79,12 @@ async function Neurons() {
       if (item.tagName != 'rect') {
         Up(event, 20, item)
         Down(event, 20, item)
+        document.querySelectorAll('.rep').forEach((item, i) => {
+          if (item.tagName != 'rect') {
+            Up(event, 20, item)
+            Down(event, 20, item)
+          }
+        })
       }
     })
     }
@@ -91,18 +97,19 @@ async function CheckCollision(who) {
   style = window.getComputedStyle(random)
   toprand = style.getPropertyValue('top')
 
-  rect1 = {x: 420, y: jumpheight, width: 30, height: 55} // Dinosaur
+  rect1 = {x: 420, y: parseInt(who.style.top), width: 30, height: 55} // Dinosaur
   rect2 = {x: moveob, y: parseInt(toprand), width: randomnosvg.getAttribute('width') * .5, height: randomnosvg.getAttribute('height')} // Random obstacle
 
   if (rect1.x < rect2.x + rect2.width &&
      rect1.x + rect1.width > rect2.x &&
      rect1.y < rect2.y + rect2.height &&
      rect1.y + rect1.height > rect2.y) {
-      x = false
-      start = false
-      await sleep(1000)
 
-      Program()
+       //x = false
+       //start = false
+       //await sleep(1000)
+
+       //Program()
   }
 }
 
@@ -126,7 +133,11 @@ async function moveSide() {
         floor2.style.left = floorpos2 + 'px'
 
         RandomLandscape()
-        CheckCollision()
+
+        CheckCollision(dinosaur)
+        document.querySelectorAll('.rep').forEach((item, i) => {
+          CheckCollision(item)
+        })
 
         await sleep(1)
       }
@@ -151,7 +162,11 @@ async function moveSide() {
           floor2.style.clip = 'rect(0px,600px,200px,' + frontlen + 'px)'
 
           RandomLandscape()
-          CheckCollision()
+
+          CheckCollision(dinosaur)
+          document.querySelectorAll('.rep').forEach((item, i) => {
+            CheckCollision(item)
+          })
 
           await sleep(1)
       }
