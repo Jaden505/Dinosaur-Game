@@ -5,6 +5,13 @@
   clip: rect(0px,600px,200px,0px);
 }
 
+.dinosaur {
+  position: absolute;
+  left: 420px;
+  top: 400px;
+  clip: rect(0px,600px,200px,0px);
+}
+
 #floor {
   position: absolute;
   left: 360px;
