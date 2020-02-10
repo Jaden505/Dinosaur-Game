@@ -2,12 +2,14 @@ async function Program() {
 let jump = false
 let dinosaur = document.getElementById('dinosaur')
 let jumpheight = 400
+
 let floor = document.getElementById('floor')
 let floorpos = 360
 let backlen = 0
 let floor2 = document.getElementById('floor2')
 let floorpos2 = 960
 let frontlen = 0
+
 let speedmove = 1
 let start = false
 let x = true
@@ -17,6 +19,7 @@ let double = 0
 let done = true
 let already = false
 let startops = false
+
 let rects = document.getElementById('first').querySelectorAll('svg')
 let random = rects[Math.floor(Math.random() * rects.length)]
 let moveob = 360
@@ -26,6 +29,7 @@ let rect1 = {x: 420, y: jumpheight, width: 30, height: 55} // Dinosaur
 let rect2 = {x: moveob, y: randomnosvg.getAttribute('top'), width: randomnosvg.getAttribute('width'), height: randomnosvg.getAttribute('height')} // Random obstacle
 let style = window.getComputedStyle(random)
 let toprand = style.getPropertyValue('top')
+
 let backlenrand = randomnosvg.getAttribute('width')
 let frontlenrand = 0
 let score = document.getElementById('score')
@@ -34,21 +38,20 @@ let zero = '0'
 let startscore = false
 
 let data = []
-let choices = [20, 30]
-let listnr = []
 let dict = {}
-let zerotwols = [0, 2.5]
-let zerotwo = choices[Math.floor(Math.random() * choices.length)]
+let choices = [20, 30]
+let type = choices[Math.floor(Math.random() * choices.length)]
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
+
 rects.forEach(element =>
   element.style.display = 'none'
 )
 
 document.querySelectorAll('.rep').forEach((item, i) => {
-  item.style.left = '520px'
+  item.style.left = '420px'
   item.style.top = '400px'
 })
 
@@ -56,23 +59,20 @@ async function Neurons() {
   while (x) {
   randtm =  Math.floor((Math.random() * 800) + 200)
   choicebm = choices[Math.floor(Math.random() * choices.length)]
-  await sleep(randtm)
-  UpDown(event, 30, '', '')
 
-//if (jump == false) {
-    //domRectdino = dinosaur.getBoundingClientRect();
-    //domRectrand = random.getBoundingClientRect();
-    //jumppredict = ((domRectdino.x - domRectrand.x) + (domRectdino.y - domRectrand.y)) / speedmove
-    //console.log(jumppredict)
-    //Up(event, choicebm, dinosaur)
-    //Down(event, choicebm, dinosaur)
-    //}
+  await sleep(randtm)
+
+  document.querySelectorAll('.rep').forEach((item, i) => {
+    domRectdino = item.getBoundingClientRect();
+    domRectrand = random.getBoundingClientRect();
+    jumppredict = ((domRectdino.x - domRectrand.x) + (domRectdino.y - domRectrand.y)) / speedmove
+  })
   }
 }
 
-Neurons()
+//Neurons()
 
-async function CheckCollision() {
+async function CheckCollision(rec) {
   randomnosvg = random.querySelector('rect')
   style = window.getComputedStyle(random)
   toprand = style.getPropertyValue('top')
@@ -83,10 +83,13 @@ async function CheckCollision() {
      rect1.x + rect1.width > rect2.x &&
      rect1.y < rect2.y + rect2.height &&
      rect1.y + rect1.height > rect2.y) {
-      x = false
-      start = false
-      await sleep(1000)
-      Program()
+       //x = false
+       //start = false
+       rec.style.fill = 'rgb(255,0,0)'
+
+       //await sleep(1000)
+
+       //Program()
   }
 }
 
@@ -108,8 +111,13 @@ async function moveSide() {
         frontlen += speedmove
         floor2.style.clip = 'rect(0px,' + frontlen + 'px,200px,0px)'
         floor2.style.left = floorpos2 + 'px'
+
         RandomLandscape()
-        CheckCollision()
+
+        document.querySelectorAll('.rep').forEach((item, x) => {
+            CheckCollision(item)
+      })
+
         await sleep(1)
       }
 
@@ -129,18 +137,22 @@ async function moveSide() {
           frontlen += speedmove
           floor2.style.left = floorpos2 + 'px'
           floor2.style.clip = 'rect(0px,600px,200px,' + frontlen + 'px)'
-          RandomLandscape()
-          CheckCollision()
-          await sleep(1)
-      }
 
+          RandomLandscape()
+          document.querySelectorAll('.rep').forEach((item, x) => {
+              CheckCollision(item)
+        })
+
+          await sleep(1)
+
+        }
       floorpos = 360
       backlen = 0
       floorpos2 = 960
       frontlen = 0
       speedmove += 0.1
+    }
   }
-}
 }
 
 async function Score() {
@@ -179,99 +191,73 @@ async function RandomLandscape() {
   if (moveob > 960) {random.style.clip = 'rect(0px,100px,100px,100px)'}
 }
 
-async function Up(e, type, who) {
+async function Up() {
   while (x) {
     await sleep(1)
-  if (jump == false && done) {
-      jump = true
-      done = false
-      for (let i = 0; i < type; i++) {
-        if (start) {
-        jumpheight -= 5
-        who.style.top = jumpheight + 'px'
+    for (let key in dict) {
+      value = dict[key]
+
+        if (key > 0) {
+          // Substract 1 of key
+          newkey = key -1
+          Object.defineProperty(dict, newkey,
+          Object.getOwnPropertyDescriptor(dict, key))
+          delete dict[key]
+          key = newkey
+
+          currentheight = parseInt(value.style.top)
+          value.style.top = (currentheight - 5) + 'px'
+        }
         await sleep(7)
-      }
-      }
-      done = true
-      break
+    }
   }
 }
-}
 
-async function Down(e, type, who) {
+async function Down() {
   while (x) {
     await sleep(1)
-  if (done && jump) {
-    done = false
-      await sleep(80)
-      for (let i = 0; i < type; i++) {
-        if (start) {
-        jumpheight += 5
-        who.style.top = jumpheight + 'px'
+      for (let key in dict) {
+        value = dict[key]
+        if (value.style.top != '401px' && key == 0) {
+          currentheight = parseInt(value.style.top)
+          value.style.top = (currentheight + 5) + 'px'
+        }
+
+        else if (key == 0 && value.style.top == '401px') {
+          value.style.top = '400px'
+          delete key
+          delete dict[key]
+        }
+
         await sleep(7)
       }
-      }
-      jump = false
-      done = true
-      break
-  }
-}
+    }
 }
 
-async function UpDown(e, type, who, i) {
-while (x) {
-  await sleep(1)
-if (listnr.includes(i) == false) {
-    jump = true
-    done = false
-    listnr.push(i)
-
-    dict = {}
+async function UpDown() {
+  while (x) {
+    await sleep(1)
     document.querySelectorAll('.rep').forEach((item, i) => {
-      if (item.tagName != 'rect') {
-        zerotwo = zerotwols[Math.floor(Math.random() * zerotwols.length)]
-        dict[i] = zerotwo
+      async function asyncforEach() {
+      if (item.tagName != 'rect' && item.style.top == '400px') {
+        item.style.top = '401px'
+        // Wait for next dino jump
+        randtm =  Math.floor((Math.random() * 80) + 20)
+        type = choices[Math.floor(Math.random() * choices.length)]
+        dict[type] = item
+        await sleep(randtm)
       }
-    })
-
-    for (let i = 0; i < type; i++) {
-      if (start) {
-        jumpheight -= 5
-        document.querySelectorAll('.rep').forEach((item, x) => {
-          if (item.tagName != 'rect' && i < 20) {
-            item.style.top = jumpheight + 'px'
-          }
-          else if (item.tagName != 'rect' && i >= 20 && dict[x] == 2.5) {
-            item.style.top = jumpheight + 'px'
-          }
-        })
-      await sleep(7)
     }
-    }
-    await sleep(80)
-    for (let i = 0; i < type; i++) {
-      if (start) {
-        jumpheight += 5
-        document.querySelectorAll('.rep').forEach((item, x) => {
-          if (item.tagName != 'rect') {
-            item.style.top = jumpheight + 'px'
-          }
-          else if (item.tagName != 'rect' && i >= 20 && dict[x] == 2.5) {
-            item.style.top = jumpheight + 'px'
-          }
-        })
-      await sleep(7)
-    }
-    }
-    jump = false
-    done = true
-    listnr.splice(listnr.indexOf(i), 1)
-    break
-}
+    asyncforEach()
+  })
 }
 }
 
+// On start functions
 moveSide()
 Score()
+UpDown()
+Up()
+Down()
 }
 Program()
