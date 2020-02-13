@@ -30,38 +30,50 @@
   left: 900px;
 }
 
+#highscore {
+  position: absolute;
+  top: 220px;
+  left: 750px;
+}
+
 #ob1 {
   position: absolute;
   top: 420px;
   clip: inherit;
+  left: -100px;
 }
 
 #ob11 {
   position: absolute;
   top: 420px;
   clip: inherit;
+  left: -100px;
 }
 
 #ob111 {
   position: absolute;
   top: 420px;
   clip: inherit;
+  left: -100px;
 }
 
 #ob2 {
   position: absolute;
   top: 405px;
   clip: inherit;
+  left: -100px;
 }
 
 #ob22 {
   position: absolute;
   top: 405px;
   clip: inherit;
+  left: -100px;
 }
 
 #ob222 {
   position: absolute;
   top: 405px;
   clip: inherit;
+  left: -100px;
 }

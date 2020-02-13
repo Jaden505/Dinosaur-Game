@@ -1,3 +1,6 @@
+// Doesnt change the prevhigh on restart game
+let prevhigh = 0
+
 async function Program() {
 let jump = false
 let dinosaur = document.getElementById('dinosaur')
@@ -49,6 +52,10 @@ let zerotwo = zerotwols[Math.floor(Math.random() * zerotwols.length)]
 let colors = ['255,0,0', '0,255,0', '0,0,255', '165, 3, 252', '252, 3, 240', '252, 144, 3']
 let randcolor = colors[Math.floor(Math.random() * colors.length)]
 
+let lsdinosdown = []
+let lsdinosalive = []
+let numberdown = 0
+let highscore = document.getElementById('highscore')
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -63,29 +70,36 @@ document.querySelectorAll('.rep').forEach((item, i) => {
   item.style.top = '400px'
   randcolor = colors[Math.floor(Math.random() * colors.length)]
   item.style.fill = 'rgb(' + randcolor + ')'
+  item.style.clip = 'inherit'
+
+  if (item.tagName != 'rect') {
+    lsdinosalive.push(i)
+  }
 })
 
 async function Neurons() {
-  while (x) {
-    // Each dino goes up random height at random time
-   document.querySelectorAll('.rep').forEach((item, i) => {
-     async function forEach3() {
-       if (item.tagName != 'rect') {
-     randtm =  Math.floor((Math.random() * 350) + 250)
-     choicebm = choices[Math.floor(Math.random() * choices.length)]
-     await sleep(randtm)
-       Up(choicebm, item)
-     }
-   }
-   forEach3()
-   })
+  numberdown = 0
+  lsdinosdown = []
 
-    // Time between all dinos can jump next
-    await sleep(1000)
-}
+  async function asyncForEach(array, callback) {
+    for (let index = 0; index < array.length; index++) {
+      await callback(array[index], index, array);
+    }
+  }
+
+     start = async () => {
+    await asyncForEach(document.querySelectorAll('.rep'), async (val, x) => {
+      if (val.tagName != 'rect' && val.style.clip == 'inherit' && start) {
+      choicebm = choices[Math.floor(Math.random() * choices.length)]
+      Up(choicebm, val, x)
+      await sleep(50 / speedmove)
+      }
+    });
+  }
+  start();
 }
 
-async function CheckCollision(item) {
+async function CheckCollision(item, i) {
   randomnosvg = random.querySelector('rect')
   style = window.getComputedStyle(random)
   toprand = style.getPropertyValue('top')
@@ -95,13 +109,26 @@ async function CheckCollision(item) {
   if (rect1.x < rect2.x + rect2.width &&
      rect1.x + rect1.width > rect2.x &&
      rect1.y < rect2.y + rect2.height &&
-     rect1.y + rect1.height > rect2.y) {
+     rect1.y + rect1.height > rect2.y &&
+     lsdinosalive.includes(i)) {
 
-      //x = false
-      //start = false
-      //await sleep(1000)
-      //Program()
       item.style.clip = ' rect(0px,600px,200px,200px)'
+
+      // Checks if all dinos died and restart if so
+      lsdinosalive.splice(lsdinosalive.indexOf(i), 1)
+      lsdinosdown.splice(lsdinosdown.indexOf(item), 1)
+
+      if (lsdinosalive.length == 0) {
+        // Update highscore
+        if (scorenr > prevhigh) {
+        highscore.innerHTML = 'HI:  ' + scorenr
+        prevhigh = scorenr
+      }
+
+        x = false
+        start = false
+        Program()
+      }
   }
 }
 
@@ -127,7 +154,7 @@ async function moveSide() {
 
         RandomLandscape()
         document.querySelectorAll('.rep').forEach((item, i) => {
-          CheckCollision(item)
+          CheckCollision(item, i)
         })
         await sleep(1)
       }
@@ -152,7 +179,7 @@ async function moveSide() {
 
           RandomLandscape()
           document.querySelectorAll('.rep').forEach((item, i) => {
-            CheckCollision(item)
+            CheckCollision(item, i)
           })
           await sleep(1)
       }
@@ -165,18 +192,20 @@ async function moveSide() {
   }
 }
 }
+
 async function Score() {
   if (startscore == false) {
     startscore = true
   // Score loop
   while (x) {
     scorenr += 1
-    await sleep(100)
+    await sleep(70)
     amountzeros = 5 - scorenr.toString().length
     score.innerHTML = zero.repeat(amountzeros) + scorenr
     }
   }
 }
+
 async function RandomLandscape() {
   moveob -= speedmove
   random.style.left = moveob + 'px'
@@ -203,7 +232,7 @@ async function RandomLandscape() {
   if (moveob > 960) {random.style.clip = 'rect(0px,100px,100px,100px)'}
 }
 
-async function Up(type, who) {
+async function Up(type, who, y) {
   for (let i = 0; i < type; i++) {
     if (start) {
       currentheight = parseInt(who.style.top)
@@ -211,10 +240,10 @@ async function Up(type, who) {
     await sleep(7)
     }
   }
-  Down(type, who)
+  Down(type, who, y)
 }
 
-async function Down(type, who) {
+async function Down(type, who, y) {
   await sleep(80)
   for (let i = 0; i < type; i++) {
     if (start) {
@@ -222,6 +251,16 @@ async function Down(type, who) {
     who.style.top = (currentheight + 5) + 'px'
     await sleep(7)
     }
+  }
+
+  // When a dino is down append to list
+  if (start && lsdinosalive.includes(y)) {
+  lsdinosdown.push(who)
+}
+
+// Restart all dino jumps when all down
+  if (lsdinosdown.length == lsdinosalive.length && start) {
+    Neurons()
   }
 }
 
