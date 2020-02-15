@@ -1,5 +1,15 @@
-// Doesnt change the prevhigh on restart game
+// Doesnt change the values on restart game
 let prevhigh = 0
+let maindata = []
+
+// Shows data on click
+document.addEventListener('keypress', async function (event) {
+  if (event.code == 'Space') {
+    maindata.forEach((obsjump) => {
+      console.log(obsjump)
+    })
+  }
+})
 
 async function Program() {
 let jump = false
@@ -54,8 +64,11 @@ let randcolor = colors[Math.floor(Math.random() * colors.length)]
 
 let lsdinosdown = []
 let lsdinosalive = []
+let obstaclejumps = []
 let numberdown = 0
 let highscore = document.getElementById('highscore')
+let tf = false
+let details = []
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -91,7 +104,15 @@ async function Neurons() {
     await asyncForEach(document.querySelectorAll('.rep'), async (val, x) => {
       if (val.tagName != 'rect' && val.style.clip == 'inherit' && start) {
       choicebm = choices[Math.floor(Math.random() * choices.length)]
-      Up(choicebm, val, x)
+
+      obstaclejumps.push(x)
+      tf = false
+
+      // Push data
+      details = [speedmove, random.style.left, random]
+      data.push(details)
+
+      Up(choicebm, val, x, details)
       await sleep(50 / speedmove)
       }
     });
@@ -113,6 +134,10 @@ async function CheckCollision(item, i) {
      lsdinosalive.includes(i)) {
 
       item.style.clip = ' rect(0px,600px,200px,200px)'
+      item.style.top = '0px'
+
+      // Longest alive and best alive dino
+      if (lsdinosalive.length == 1) {}
 
       // Checks if all dinos died and restart if so
       lsdinosalive.splice(lsdinosalive.indexOf(i), 1)
@@ -124,6 +149,11 @@ async function CheckCollision(item, i) {
         highscore.innerHTML = 'HI:  ' + scorenr
         prevhigh = scorenr
       }
+
+      data.pop()
+      data.forEach((item) => {
+        maindata.push(item)
+    })
 
         x = false
         start = false
@@ -188,7 +218,7 @@ async function moveSide() {
       backlen = 0
       floorpos2 = 960
       frontlen = 0
-      speedmove += 0.1
+      speedmove += 0.2
   }
 }
 }
@@ -232,36 +262,51 @@ async function RandomLandscape() {
   if (moveob > 960) {random.style.clip = 'rect(0px,100px,100px,100px)'}
 }
 
-async function Up(type, who, y) {
+async function Up(type, who, y, details) {
   for (let i = 0; i < type; i++) {
-    if (start) {
+    if (start && lsdinosalive.includes(y)) {
+
+      if (parseInt(random.style.left) < 450 && parseInt(random.style.left) > 450 - (random.querySelector('rect').getAttribute('width'))) {tf = true}
+
       currentheight = parseInt(who.style.top)
     who.style.top = (currentheight - 5) + 'px'
     await sleep(7)
     }
   }
-  Down(type, who, y)
+  Down(type, who, y, details)
 }
 
-async function Down(type, who, y) {
+async function Down(type, who, y, details) {
   await sleep(80)
   for (let i = 0; i < type; i++) {
-    if (start) {
+    if (start && lsdinosalive.includes(y)) {
+
+      if (parseInt(random.style.left) < 450 && parseInt(random.style.left) > 450 - (random.querySelector('rect').getAttribute('width'))) {tf = true}
+
       currentheight = parseInt(who.style.top)
     who.style.top = (currentheight + 5) + 'px'
     await sleep(7)
     }
   }
 
+  // Checks if dino is still alive
+  if (start && lsdinosalive.includes(y) && tf && parseInt(details[1]) > 450) {
+    obstaclejumps.splice(obstaclejumps.indexOf(y), 1)
+    //console.log('succesfull obstacle jump')
+}
+  else if (start) {
+    data.forEach((item) => {
+      if (item == details) {data.splice(data.indexOf(details), 1)}
+    })
+  }
+
   // When a dino is down append to list
   if (start && lsdinosalive.includes(y)) {
-  lsdinosdown.push(who)
+  lsdinosdown.push(y)
 }
 
 // Restart all dino jumps when all down
-  if (lsdinosdown.length == lsdinosalive.length && start) {
-    Neurons()
-  }
+  if (lsdinosdown.length == lsdinosalive.length && start) {Neurons()}
 }
 
 moveSide()
