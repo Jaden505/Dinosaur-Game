@@ -1,13 +1,19 @@
 // Doesnt change the values on restart game
 let prevhigh = 0
 let maindata = []
+let prevdinodata = []
 
 // Shows data on click
+let nr = 0
+let average = 0
 document.addEventListener('keypress', async function (event) {
   if (event.code == 'Space') {
     maindata.forEach((obsjump) => {
       console.log(obsjump)
+      average += parseInt(obsjump[2])
+      nr += 1
     })
+    console.log(average / nr)
   }
 })
 
@@ -69,6 +75,8 @@ let numberdown = 0
 let highscore = document.getElementById('highscore')
 let tf = false
 let details = []
+let optionsls = [1, 2, 3]
+let rounded = Math.round(speedmove * 10 ) / 10
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -90,6 +98,74 @@ document.querySelectorAll('.rep').forEach((item, i) => {
   }
 })
 
+
+
+
+var isEqual = function (value, other) {
+
+	// Get the value type
+	var type = Object.prototype.toString.call(value);
+
+	// If the two objects are not the same type, return false
+	if (type !== Object.prototype.toString.call(other)) return false;
+
+	// If items are not an object or array, return false
+	if (['[object Array]', '[object Object]'].indexOf(type) < 0) return false;
+
+	// Compare the length of the length of the two items
+	var valueLen = type === '[object Array]' ? value.length : Object.keys(value).length;
+	var otherLen = type === '[object Array]' ? other.length : Object.keys(other).length;
+	if (valueLen !== otherLen) return false;
+
+	// Compare two items
+	var compare = function (item1, item2) {
+
+		// Get the object type
+		var itemType = Object.prototype.toString.call(item1);
+
+		// If an object or array, compare recursively
+		if (['[object Array]', '[object Object]'].indexOf(itemType) >= 0) {
+			if (!isEqual(item1, item2)) return false;
+		}
+
+		// Otherwise, do a simple comparison
+		else {
+
+			// If the two items are not the same type, return false
+			if (itemType !== Object.prototype.toString.call(item2)) return false;
+
+			// Else if it's a function, convert to a string and compare
+			// Otherwise, just compare
+			if (itemType === '[object Function]') {
+				if (item1.toString() !== item2.toString()) return false;
+			} else {
+				if (item1 !== item2) return false;
+			}
+
+		}
+	};
+
+	// Compare properties
+	if (type === '[object Array]') {
+		for (var i = 0; i < valueLen; i++) {
+			if (compare(value[i], other[i]) === false) return false;
+		}
+	} else {
+		for (var key in value) {
+			if (value.hasOwnProperty(key)) {
+				if (compare(value[key], other[key]) === false) return false;
+			}
+		}
+	}
+
+	// If nothing failed, return true
+	return true;
+};
+
+
+
+
+
 async function Neurons() {
   numberdown = 0
   lsdinosdown = []
@@ -108,11 +184,48 @@ async function Neurons() {
       obstaclejumps.push(x)
       tf = false
 
-      // Push data
-      details = [speedmove, random.style.left, random]
-      data.push(details)
+    let maindatarepp = maindata.map(function(elem) {
+      // If in previous dino data
+      rounded = Math.round(speedmove * 10 ) / 10
+      details = [x, rounded, (Math.round(parseInt(random.style.left))) + 'px', random, 1]
+      if (isEqual(elem, details)) {console.log('!!!!!!!')}
+      details = [x, rounded, (Math.round(parseInt(random.style.left))) + 'px', random, 2]
+      if (isEqual(elem, details)) {console.log('!!!!!!!')}
+      details = [x, rounded, (Math.round(parseInt(random.style.left))) + 'px', random, 3]
+      if (isEqual(elem, details)) {console.log('!!!!!!!')}
+    })
 
-      Up(choicebm, val, x, details)
+    // Random pick jump
+    rounded = Math.round(speedmove * 10 ) / 10
+    details = [x, rounded, (Math.round(parseInt(random.style.left))) + 'px', random]
+    if (start) {optionpick = optionsls[Math.floor(Math.random() * optionsls.length)]}
+
+      if (optionpick == 1 && start) {
+        // Push data
+        rounded = Math.round(speedmove * 10 ) / 10
+        details = [x, rounded, (Math.round(parseInt(random.style.left))) + 'px', random, optionpick]
+        data.push(details)
+
+        Up(25, val, x, details)
+      }
+      else if (optionpick == 2 && start) {
+        // Push data
+        rounded = Math.round(speedmove * 10 ) / 10
+        details = [x, rounded, (Math.round(parseInt(random.style.left))) + 'px', random, optionpick]
+        data.push(details)
+
+        Up(35, val, x, details)
+      }
+      else if (optionpick == 3 && start) {
+        // Push data
+        rounded = Math.round(speedmove * 10 ) / 10
+        details = [x, rounded, (Math.round(parseInt(random.style.left))) + 'px', random, optionpick]
+        data.push(details)
+
+        if (start && lsdinosalive.includes(x)) {lsdinosdown.push(x)}
+        if (lsdinosdown.length == lsdinosalive.length && start) {Neurons()}
+      }
+
       await sleep(50 / speedmove)
       }
     });
@@ -136,24 +249,21 @@ async function CheckCollision(item, i) {
       item.style.clip = ' rect(0px,600px,200px,200px)'
       item.style.top = '0px'
 
-      // Longest alive and best alive dino
-      if (lsdinosalive.length == 1) {}
-
       // Checks if all dinos died and restart if so
       lsdinosalive.splice(lsdinosalive.indexOf(i), 1)
       lsdinosdown.splice(lsdinosdown.indexOf(item), 1)
 
       if (lsdinosalive.length == 0) {
+        // Replace all previous bestdino data
+        prevdinodata = []
+        data.forEach((item) => {
+        if (item[0] == i) {prevdinodata.push(item), maindata.push(item)}
+      })
         // Update highscore
         if (scorenr > prevhigh) {
         highscore.innerHTML = 'HI:  ' + scorenr
         prevhigh = scorenr
-      }
-
-      data.pop()
-      data.forEach((item) => {
-        maindata.push(item)
-    })
+  }
 
         x = false
         start = false
@@ -294,13 +404,7 @@ async function Down(type, who, y, details) {
     obstaclejumps.splice(obstaclejumps.indexOf(y), 1)
     //console.log('succesfull obstacle jump')
 }
-  else if (start) {
-    data.forEach((item) => {
-      if (item == details) {data.splice(data.indexOf(details), 1)}
-    })
-  }
 
-  // When a dino is down append to list
   if (start && lsdinosalive.includes(y)) {
   lsdinosdown.push(y)
 }
