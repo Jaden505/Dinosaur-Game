@@ -1,21 +1,61 @@
 // Doesnt change the values on restart game
 let prevhigh = 0
-let maindata = []
-let prevdinodata = []
+let jump_train = []
+let typejump_train = []
+let jump_test = []
+let typejump_test = []
 
 // Shows data on click
-let nr = 0
-let average = 0
 document.addEventListener('keypress', async function (event) {
   if (event.code == 'Space') {
-    maindata.forEach((obsjump) => {
-      console.log(obsjump)
-      average += parseInt(obsjump[2])
-      nr += 1
+    jump_train.forEach((jump) => {
+      console.log(jump)
     })
-    console.log(average / nr)
+    console.log(jump_train.length, typejump_train.length)
   }
 })
+
+// Download data
+function download(strData, strFileName, strMimeType) {
+var D = document,
+    A = arguments,
+    a = D.createElement("a"),
+    d = A[0],
+    n = A[1],
+    t = A[2] || "text/plain";
+
+//build download link:
+a.href = "data:" + strMimeType + "charset=utf-8," + escape(strData);
+
+if (window.MSBlobBuilder) { // IE10
+    var bb = new MSBlobBuilder();
+    bb.append(strData);
+    return navigator.msSaveBlob(bb, strFileName);
+} /* end if(window.MSBlobBuilder) */
+
+if ('download' in a) { //FF20, CH19
+    a.setAttribute("download", n);
+    a.innerHTML = "downloading...";
+    D.body.appendChild(a);
+    setTimeout(function() {
+        var e = D.createEvent("MouseEvents");
+        e.initMouseEvent("click", true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+        a.dispatchEvent(e);
+        D.body.removeChild(a);
+    }, 66);
+    return true;
+}; /* end if('download' in a) */
+
+//do iframe dataURL download: (older W3)
+var f = D.createElement("iframe");
+D.body.appendChild(f);
+f.src = "data:" + (A[2] ? A[2] : "application/octet-stream") + (window.btoa ? ";base64" : "") + "," + (window.btoa ? window.btoa : escape)(strData);
+setTimeout(function() {
+    D.body.removeChild(f);
+}, 333);
+return true;
+}
+//download(jump_train, 'data.txt', 'text/plain')
 
 async function Program() {
 let jump = false
@@ -98,74 +138,6 @@ document.querySelectorAll('.rep').forEach((item, i) => {
   }
 })
 
-
-
-
-var isEqual = function (value, other) {
-
-	// Get the value type
-	var type = Object.prototype.toString.call(value);
-
-	// If the two objects are not the same type, return false
-	if (type !== Object.prototype.toString.call(other)) return false;
-
-	// If items are not an object or array, return false
-	if (['[object Array]', '[object Object]'].indexOf(type) < 0) return false;
-
-	// Compare the length of the length of the two items
-	var valueLen = type === '[object Array]' ? value.length : Object.keys(value).length;
-	var otherLen = type === '[object Array]' ? other.length : Object.keys(other).length;
-	if (valueLen !== otherLen) return false;
-
-	// Compare two items
-	var compare = function (item1, item2) {
-
-		// Get the object type
-		var itemType = Object.prototype.toString.call(item1);
-
-		// If an object or array, compare recursively
-		if (['[object Array]', '[object Object]'].indexOf(itemType) >= 0) {
-			if (!isEqual(item1, item2)) return false;
-		}
-
-		// Otherwise, do a simple comparison
-		else {
-
-			// If the two items are not the same type, return false
-			if (itemType !== Object.prototype.toString.call(item2)) return false;
-
-			// Else if it's a function, convert to a string and compare
-			// Otherwise, just compare
-			if (itemType === '[object Function]') {
-				if (item1.toString() !== item2.toString()) return false;
-			} else {
-				if (item1 !== item2) return false;
-			}
-
-		}
-	};
-
-	// Compare properties
-	if (type === '[object Array]') {
-		for (var i = 0; i < valueLen; i++) {
-			if (compare(value[i], other[i]) === false) return false;
-		}
-	} else {
-		for (var key in value) {
-			if (value.hasOwnProperty(key)) {
-				if (compare(value[key], other[key]) === false) return false;
-			}
-		}
-	}
-
-	// If nothing failed, return true
-	return true;
-};
-
-
-
-
-
 async function Neurons() {
   numberdown = 0
   lsdinosdown = []
@@ -184,51 +156,15 @@ async function Neurons() {
       obstaclejumps.push(x)
       tf = false
 
-    let maindatarepp = maindata.map(function(elem) {
-      // If in previous dino data
-      rounded = Math.round(speedmove * 10 ) / 10
-      details = [x, rounded, (Math.round(parseInt(random.style.left))) + 'px', random, 1]
-      if (isEqual(elem, details)) {console.log('!!!!!!!')}
-      details = [x, rounded, (Math.round(parseInt(random.style.left))) + 'px', random, 2]
-      if (isEqual(elem, details)) {console.log('!!!!!!!')}
-      details = [x, rounded, (Math.round(parseInt(random.style.left))) + 'px', random, 3]
-      if (isEqual(elem, details)) {console.log('!!!!!!!')}
-    })
-
     // Random pick jump
     rounded = Math.round(speedmove * 10 ) / 10
-    details = [x, rounded, (Math.round(parseInt(random.style.left))) + 'px', random]
-    if (start) {optionpick = optionsls[Math.floor(Math.random() * optionsls.length)]}
-
-      if (optionpick == 1 && start) {
-        // Push data
-        rounded = Math.round(speedmove * 10 ) / 10
-        details = [x, rounded, (Math.round(parseInt(random.style.left))) + 'px', random, optionpick]
-        data.push(details)
-
-        Up(25, val, x, details)
-      }
-      else if (optionpick == 2 && start) {
-        // Push data
-        rounded = Math.round(speedmove * 10 ) / 10
-        details = [x, rounded, (Math.round(parseInt(random.style.left))) + 'px', random, optionpick]
-        data.push(details)
-
-        Up(35, val, x, details)
-      }
-      else if (optionpick == 3 && start) {
-        // Push data
-        rounded = Math.round(speedmove * 10 ) / 10
-        details = [x, rounded, (Math.round(parseInt(random.style.left))) + 'px', random, optionpick]
-        data.push(details)
-
-        if (start && lsdinosalive.includes(x)) {lsdinosdown.push(x)}
-        if (lsdinosdown.length == lsdinosalive.length && start) {Neurons()}
-      }
+    details = [x, rounded, Math.round(parseInt(random.style.left)),
+       parseInt(random.querySelector('rect').getAttribute('width')), parseInt(random.querySelector('rect').getAttribute('height'))]
+    Up(choicebm, val, x, details)
 
       await sleep(50 / speedmove)
       }
-    });
+    })
   }
   start();
 }
@@ -254,17 +190,11 @@ async function CheckCollision(item, i) {
       lsdinosdown.splice(lsdinosdown.indexOf(item), 1)
 
       if (lsdinosalive.length == 0) {
-        // Replace all previous bestdino data
-        prevdinodata = []
-        data.forEach((item) => {
-        if (item[0] == i) {prevdinodata.push(item), maindata.push(item)}
-      })
         // Update highscore
         if (scorenr > prevhigh) {
         highscore.innerHTML = 'HI:  ' + scorenr
         prevhigh = scorenr
   }
-
         x = false
         start = false
         Program()
@@ -400,9 +330,14 @@ async function Down(type, who, y, details) {
   }
 
   // Checks if dino is still alive
-  if (start && lsdinosalive.includes(y) && tf && parseInt(details[1]) > 450) {
+  if (start && lsdinosalive.includes(y) && tf && details[2] > 450) {
     obstaclejumps.splice(obstaclejumps.indexOf(y), 1)
-    //console.log('succesfull obstacle jump')
+    jump_train.push(details)
+    typejump_train.push(1)
+}
+else {
+  jump_train.push(details)
+  typejump_train.push(0)
 }
 
   if (start && lsdinosalive.includes(y)) {
