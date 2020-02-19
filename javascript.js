@@ -8,10 +8,8 @@ let typejump_test = []
 // Shows data on click
 document.addEventListener('keypress', async function (event) {
   if (event.code == 'Space') {
-    jump_train.forEach((jump) => {
-      console.log(jump)
-    })
-    console.log(jump_train.length, typejump_train.length)
+    download(jump_train, 'datajump.txt', 'text/plain')
+    download(typejump_train, 'datatype.txt', 'text/plain')
   }
 })
 
@@ -157,7 +155,7 @@ async function Neurons() {
       tf = false
 
     // Random pick jump
-    rounded = Math.round(speedmove * 10 ) / 10
+    rounded = Math.round(speedmove * 10) / 10
     details = [x, rounded, Math.round(parseInt(random.style.left)),
        parseInt(random.querySelector('rect').getAttribute('width')), parseInt(random.querySelector('rect').getAttribute('height'))]
     Up(choicebm, val, x, details)
@@ -329,14 +327,31 @@ async function Down(type, who, y, details) {
     }
   }
 
+  //let zeros = 0
+  //let ones = 0
+  //let allowed = true
+  //let allowed2 = true
+  //typejump_train.forEach((item, i) => {
+    //if (item == 0) {zeros += 1}
+    //else if (item == 1) {ones += 1}
+  //})
+
+  //if (zeros + 1 >= ones + 2) {allowed2 = false}
+  //if (ones + 1 >= zeros + 2) {allowed = false}
+
   // Checks if dino is still alive
-  if (start && lsdinosalive.includes(y) && tf && details[2] > 450) {
+  if (start && lsdinosalive.includes(y) && tf && details[2] > 450 && type == 25) {
     obstaclejumps.splice(obstaclejumps.indexOf(y), 1)
-    jump_train.push(details)
-    typejump_train.push(1)
+    jump_train.push('[' + details + ']')
+    typejump_train.push(-1)
+}
+else if (start && lsdinosalive.includes(y) && tf && details[2] > 450 && type == 35) {
+  obstaclejumps.splice(obstaclejumps.indexOf(y), 1)
+  jump_train.push('[' + details + ']')
+  typejump_train.push(1)
 }
 else {
-  jump_train.push(details)
+  jump_train.push('[' + details + ']')
   typejump_train.push(0)
 }
 
