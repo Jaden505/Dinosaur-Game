@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 #import os
 import ast
 #from numpy import loadtxt
-import csv
+#import csv
 
 def shapeData():
     # Train file x
@@ -45,42 +45,61 @@ def shapeData():
 
     jump_test.close()
 
-    print(len(rd1), len(rd2), len(rd3), len(rd4))
-
     x_train = np.array(rd1)
     y_train = np.array(rd2)
     x_test = np.array(rd3)
     y_test = np.array(rd4)
 
-    tf.keras.utils.normalize(x_train, axis=1)
-    tf.keras.utils.normalize(x_test, axis=1)
+    #tf.keras.utils.normalize(x_train, axis=1)
+    #tf.keras.utils.normalize(x_test, axis=1)
 
-    neuralNetwork(x_train, y_train, x_test, y_test)
+    #print(x_test, y_test)
 
-def neuralNetwork(x_train, y_train, x_test, y_test):
-    model = tf.keras.models.Sequential()
+    #neuralNetwork(x_train, y_train, x_test, y_test)
 
-    # Input
-    model.add(tf.keras.layers.Flatten())
 
-    # Hidden
-    model.add(tf.keras.layers.Dense(20000, activation='relu'))
 
-    # Output
-    model.add(tf.keras.layers.Dense(3, activation='softmax'))
 
-    model.compile(optimizer= 'adam', loss= 'categorical_crossentropy', metrics=['accuracy'] )
 
-    model.fit(x_train, y_train, epochs=3)
+    print('Data before normalization', x_train[0])
+    print('Data before normalization' ,y_train[0])
+
+    x_train, x_test = x_train / 250.0, x_test / 250.0
+    #tf.keras.utils.normalize(x_train, axis=1)
+    #tf.keras.utils.normalize(x_test, axis=1)
+
+
+    model = tf.keras.models.Sequential([
+        tf.keras.layers.Flatten(),
+        tf.keras.layers.Dense(128, activation='relu'),
+        tf.keras.layers.Dropout(0.2),
+        tf.keras.layers.Dense(3)
+    ])
+
+    predictions = model(x_train[:1]).numpy()
+    print('Predictions:', predictions)
+
+    tf.nn.softmax(predictions).numpy()
+
+    print('Predictions2:', predictions)
+
+    loss_fn = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
+    loss_fn(y_train[:1], predictions).numpy()
+
+    model.compile(optimizer='adam',
+                  loss=loss_fn,
+                  metrics=['accuracy'])
+
+    model.fit(x_train, y_train, epochs=150)
 
     predictions = model.predict([x_test])
-    print(predictions)
+    for i in range(20):
+        print(np.argmax(predictions[i]))
+        print(y_test[i])
+        print('\n')
 
-    for i in range(10):
-        print(predictions[i])
-        print(y_test[i], '\n')
+    #print("Evaluation: ", model.evaluate(x_test,  y_test, verbose=2))
+
+
 
 shapeData()
-
-
-# Data shape working, Neural network not actually learning nor are the outputs correct
