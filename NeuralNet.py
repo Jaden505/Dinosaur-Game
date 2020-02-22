@@ -7,6 +7,10 @@ import ast
 #from numpy import loadtxt
 #import csv
 
+
+def sigmoid(x):
+    return 1.0/(1 + np.exp(-x))
+
 def shapeData():
     # Train file x
     jump_train = open('Data_storage/datajump.csv', 'r')
@@ -45,29 +49,20 @@ def shapeData():
 
     jump_test.close()
 
+     # Set data between 0 and 1
+    rd1 = [[sigmoid(i) for i in x] for x in rd1]
+    rd3 = [[sigmoid(i) for i in x] for x in rd3]
+
+    print(rd1)
+    print(rd3)
+
     x_train = np.array(rd1)
     y_train = np.array(rd2)
     x_test = np.array(rd3)
     y_test = np.array(rd4)
 
-    #tf.keras.utils.normalize(x_train, axis=1)
-    #tf.keras.utils.normalize(x_test, axis=1)
-
-    #print(x_test, y_test)
-
-    #neuralNetwork(x_train, y_train, x_test, y_test)
-
-
-
-
-
-    print('Data before normalization', x_train[0])
-    print('Data before normalization' ,y_train[0])
-
-    x_train, x_test = x_train / 250.0, x_test / 250.0
-    #tf.keras.utils.normalize(x_train, axis=1)
-    #tf.keras.utils.normalize(x_test, axis=1)
-
+    print(x_train)
+    print(x_test)
 
     model = tf.keras.models.Sequential([
         tf.keras.layers.Flatten(),
@@ -77,11 +72,7 @@ def shapeData():
     ])
 
     predictions = model(x_train[:1]).numpy()
-    print('Predictions:', predictions)
-
     tf.nn.softmax(predictions).numpy()
-
-    print('Predictions2:', predictions)
 
     loss_fn = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
     loss_fn(y_train[:1], predictions).numpy()
@@ -90,7 +81,7 @@ def shapeData():
                   loss=loss_fn,
                   metrics=['accuracy'])
 
-    model.fit(x_train, y_train, epochs=150)
+    model.fit(x_train, y_train, epochs=10, batch_size=50)
 
     predictions = model.predict([x_test])
     for i in range(20):
@@ -98,8 +89,6 @@ def shapeData():
         print(y_test[i])
         print('\n')
 
-    #print("Evaluation: ", model.evaluate(x_test,  y_test, verbose=2))
-
-
+    print("Evaluation: ", model.evaluate(x_test,  y_test, verbose=2))
 
 shapeData()
