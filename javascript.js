@@ -4,12 +4,14 @@ let jump_train = []
 let typejump_train = []
 let jump_test = []
 let typejump_test = []
+let socket = new WebSocket("ws://localhost:8765/")
+let interactivedino = document.getElementById('interactivedino')
 
 // Shows data on click
 document.addEventListener('keypress', async function (event) {
   if (event.code == 'Space') {
-    download(jump_train, 'datajump.txt', 'text/plain')
-    download(typejump_train, 'datatype.txt', 'text/plain')
+    download(jump_train, 'datajump.csv', 'application/msword')
+    download(typejump_train, 'datatype.csv', 'application/msword')
   }
 })
 
@@ -158,8 +160,8 @@ async function Neurons() {
     rounded = Math.round(speedmove * 10) / 10
     details = [x, rounded, Math.round(parseInt(random.style.left)),
        parseInt(random.querySelector('rect').getAttribute('width')), parseInt(random.querySelector('rect').getAttribute('height'))]
-    Up(choicebm, val, x, details)
 
+      SendRecieve(val, x, details)
       await sleep(50 / speedmove)
       }
     })
@@ -180,7 +182,7 @@ async function CheckCollision(item, i) {
      rect1.y + rect1.height > rect2.y &&
      lsdinosalive.includes(i)) {
 
-      item.style.clip = ' rect(0px,600px,200px,200px)'
+      item.style.clip = 'rect(0px,600px,200px,200px)'
       item.style.top = '0px'
 
       // Checks if all dinos died and restart if so
@@ -327,40 +329,34 @@ async function Down(type, who, y, details) {
     }
   }
 
-  //let zeros = 0
-  //let ones = 0
-  //let allowed = true
-  //let allowed2 = true
-  //typejump_train.forEach((item, i) => {
-    //if (item == 0) {zeros += 1}
-    //else if (item == 1) {ones += 1}
-  //})
-
-  //if (zeros + 1 >= ones + 2) {allowed2 = false}
-  //if (ones + 1 >= zeros + 2) {allowed = false}
-
-  // Checks if dino is still alive
-  if (start && lsdinosalive.includes(y) && tf && details[2] > 450 && type == 25) {
-    obstaclejumps.splice(obstaclejumps.indexOf(y), 1)
-    jump_train.push('[' + details + ']')
-    typejump_train.push(-1)
-}
-else if (start && lsdinosalive.includes(y) && tf && details[2] > 450 && type == 35) {
-  obstaclejumps.splice(obstaclejumps.indexOf(y), 1)
-  jump_train.push('[' + details + ']')
-  typejump_train.push(1)
-}
-else {
-  jump_train.push('[' + details + ']')
-  typejump_train.push(0)
-}
-
   if (start && lsdinosalive.includes(y)) {
   lsdinosdown.push(y)
 }
 
 // Restart all dino jumps when all down
   if (lsdinosdown.length == lsdinosalive.length && start) {Neurons()}
+}
+
+async function SendRecieve(val, x, details) {
+  // Send
+  socket = new WebSocket("ws://localhost:8765/")
+
+  socket.onopen = function(e) {
+    socket.send(details)
+  }
+
+  // Receieve
+  socket.onmessage = async function(event) {
+    if (event.data == 1) {Up(25, val, x, details)}
+    else if (event.data == 2) {Up(35, val, x, details)}
+    else {
+      await sleep(300)
+      if (start && lsdinosalive.includes(x)) {
+      lsdinosdown.push(x)
+    }
+      if (lsdinosdown.length == lsdinosalive.length && start) {Neurons()}
+    }
+  }
 }
 
 moveSide()
