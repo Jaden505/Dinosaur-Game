@@ -1,0 +1,95 @@
+#dino {
+  position: absolute;
+  left: 420px;
+  top: 400px;
+  clip: rect(0px,600px,200px,0px);
+}
+
+#dino_ai {
+  position: absolute;
+  left: 420px;
+  top: 400px;
+  clip: rect(0px,600px,200px,0px);
+}
+
+#floor {
+  position: absolute;
+  left: 360px;
+  top: 440px;
+  width: 600px;
+  height: 1px;
+  clip: rect(0px,600px,200px,0px);
+}
+
+#floor2 {
+  position: absolute;
+  left: 960px;
+  top: 440px;
+  width: 600px;
+  height: 1px;
+  clip: rect(0px,600px,200px,0px);
+  fill: rgb(255, 0, 0);
+}
+
+#score {
+  position: absolute;
+  top: 220px;
+  left: 900px;
+}
+
+#highscore {
+  position: absolute;
+  top: 220px;
+  left: 750px;
+}
+
+#ob1 {
+  position: absolute;
+  top: 420px;
+  clip: inherit;
+  left: -100px;
+}
+
+#ob11 {
+  position: absolute;
+  top: 420px;
+  clip: inherit;
+  left: -100px;
+}
+
+#ob111 {
+  position: absolute;
+  top: 420px;
+  clip: inherit;
+  left: -100px;
+}
+
+#ob2 {
+  position: absolute;
+  top: 405px;
+  clip: inherit;
+  left: -100px;
+}
+
+#ob22 {
+  position: absolute;
+  top: 405px;
+  clip: inherit;
+  left: -100px;
+}
+
+#ob222 {
+  position: absolute;
+  top: 405px;
+  clip: inherit;
+  left: -100px;
+}
+
+canvas {
+    border:1px solid #d3d3d3;
+    background-color: #f1f1f1;
+    margin-top: 160px;
+   margin-left: 230px;
+   display: block;
+   width: 800px;
+ }
