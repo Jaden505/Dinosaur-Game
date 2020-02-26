@@ -1,17 +1,23 @@
 import tensorflow as tf
 import numpy as np
 from tensorflow import keras
-import matplotlib.pyplot as plt
-#import os
+#import matplotlib.pyplot as plt
+from matplotlib import pyplot
 import ast
-#from numpy import loadtxt
-#import csv
 
+from tensorflow.keras.models import model_from_json
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Dropout, Activation, Flatten
+from tensorflow.keras.layers import Conv2D, MaxPooling2D
+from tensorflow.keras.optimizers import SGD , Adam
+from tensorflow.keras.callbacks import TensorBoard
+
+tf.keras.backend.set_floatx('float64')
 
 def sigmoid(x):
     return 1.0/(1 + np.exp(-x))
 
-def shapeData():
+def ShapeData():
     # Train file x
     jump_train = open('Data_storage/datajump.csv', 'r')
 
@@ -50,45 +56,54 @@ def shapeData():
     jump_test.close()
 
      # Set data between 0 and 1
-    rd1 = [[sigmoid(i) for i in x] for x in rd1]
-    rd3 = [[sigmoid(i) for i in x] for x in rd3]
-
-    print(rd1)
-    print(rd3)
+    #rd1 = [[sigmoid(i) for i in x] for x in rd1]
+    #rd3 = [[sigmoid(i) for i in x] for x in rd3]
 
     x_train = np.array(rd1)
     y_train = np.array(rd2)
     x_test = np.array(rd3)
     y_test = np.array(rd4)
 
-    print(x_train)
-    print(x_test)
+    NeuralNet(x_train, y_train, x_test, y_test)
 
-    model = tf.keras.models.Sequential([
-        tf.keras.layers.Flatten(),
-        tf.keras.layers.Dense(128, activation='relu'),
-        tf.keras.layers.Dropout(0.2),
-        tf.keras.layers.Dense(3)
-    ])
+def NeuralNet(x_train, y_train, x_test, y_test):
 
-    predictions = model(x_train[:1]).numpy()
-    tf.nn.softmax(predictions).numpy()
+    model = Sequential()
+    model.add(Conv2D(32, (8, 8), padding='same',strides=(4, 4),input_shape=(5,)))  #80*80*4
+    model.add(MaxPooling2D(pool_size=(2,2)))
+    model.add(Activation('relu'))
+    model.add(Conv2D(64, (4, 4),strides=(2, 2),  padding='same'))
+    model.add(MaxPooling2D(pool_size=(2,2)))
+    model.add(Activation('relu'))
+    model.add(Conv2D(64, (3, 3),strides=(1, 1),  padding='same'))
+    model.add(MaxPooling2D(pool_size=(2,2)))
+    model.add(Activation('relu'))
+    model.add(Flatten())
+    model.add(Dense(512))
+    model.add(Activation('relu'))
+    model.add(Dense(2))
+    adam = Adam(lr=1e-4)
+    model.compile(loss='mse',optimizer='adam')
 
-    loss_fn = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
-    loss_fn(y_train[:1], predictions).numpy()
+    history = model.fit(x_train, y_train, epochs=30, batch_size=50)
 
-    model.compile(optimizer='adam',
-                  loss=loss_fn,
-                  metrics=['accuracy'])
+    predictions = model.predict(x_test)
 
-    model.fit(x_train, y_train, epochs=10, batch_size=50)
-
-    predictions = model.predict([x_test])
-    for i in range(20):
+    for i in range(10):
         print(np.argmax(predictions[i]))
         print(y_test[i])
         print('\n')
 
-    print("Evaluation: ", model.evaluate(x_test,  y_test, verbose=2))
+    # plot loss during training
+    pyplot.subplot(211)
+    pyplot.title('Loss')
+    pyplot.plot(history.history['loss'], label='train')
+    pyplot.legend()
+    # plot mse during training
+    pyplot.subplot(212)
+    pyplot.title('Accuracy')
+    pyplot.plot(history.history['accuracy'], label='train')
+    pyplot.legend()
+    pyplot.show()
 
-shapeData()
+ShapeData()

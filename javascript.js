@@ -5,61 +5,9 @@ let typejump_train = []
 let jump_test = []
 let typejump_test = []
 let socket = new WebSocket("ws://localhost:8765/")
-let interactivedino = document.getElementById('interactivedino')
-
-// Shows data on click
-document.addEventListener('keypress', async function (event) {
-  if (event.code == 'Space') {
-    download(jump_train, 'datajump.csv', 'application/msword')
-    download(typejump_train, 'datatype.csv', 'application/msword')
-  }
-})
-
-// Download data
-function download(strData, strFileName, strMimeType) {
-var D = document,
-    A = arguments,
-    a = D.createElement("a"),
-    d = A[0],
-    n = A[1],
-    t = A[2] || "text/plain";
-
-//build download link:
-a.href = "data:" + strMimeType + "charset=utf-8," + escape(strData);
-
-if (window.MSBlobBuilder) { // IE10
-    var bb = new MSBlobBuilder();
-    bb.append(strData);
-    return navigator.msSaveBlob(bb, strFileName);
-} /* end if(window.MSBlobBuilder) */
-
-if ('download' in a) { //FF20, CH19
-    a.setAttribute("download", n);
-    a.innerHTML = "downloading...";
-    D.body.appendChild(a);
-    setTimeout(function() {
-        var e = D.createEvent("MouseEvents");
-        e.initMouseEvent("click", true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
-        a.dispatchEvent(e);
-        D.body.removeChild(a);
-    }, 66);
-    return true;
-}; /* end if('download' in a) */
-
-//do iframe dataURL download: (older W3)
-var f = D.createElement("iframe");
-D.body.appendChild(f);
-f.src = "data:" + (A[2] ? A[2] : "application/octet-stream") + (window.btoa ? ";base64" : "") + "," + (window.btoa ? window.btoa : escape)(strData);
-setTimeout(function() {
-    D.body.removeChild(f);
-}, 333);
-return true;
-}
-//download(jump_train, 'data.txt', 'text/plain')
 
 async function Program() {
 let jump = false
-let dinosaur = document.getElementById('dinosaur')
 let jumpheight = 400
 
 let floor = document.getElementById('floor')
@@ -118,6 +66,11 @@ let details = []
 let optionsls = [1, 2, 3]
 let rounded = Math.round(speedmove * 10 ) / 10
 
+let dino = document.getElementById('dino')
+let dino_ai = document.getElementById('dino_ai')
+let both_dinos = [dino, dino_ai]
+let dino_ai_ls = [dino_ai]
+
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -126,7 +79,7 @@ rects.forEach(element =>
   element.style.display = 'none'
 )
 
-document.querySelectorAll('.rep').forEach((item, i) => {
+both_dinos.forEach((item, i) => {
   item.style.left = '420px'
   item.style.top = '400px'
   randcolor = colors[Math.floor(Math.random() * colors.length)]
@@ -149,12 +102,12 @@ async function Neurons() {
   }
 
      start = async () => {
-    await asyncForEach(document.querySelectorAll('.rep'), async (val, x) => {
+    await asyncForEach(dino_ai_ls, async (val, x) => {
       if (val.tagName != 'rect' && val.style.clip == 'inherit' && start) {
       choicebm = choices[Math.floor(Math.random() * choices.length)]
+      console.log(x)
 
       obstaclejumps.push(x)
-      tf = false
 
     // Random pick jump
     rounded = Math.round(speedmove * 10) / 10
@@ -195,6 +148,7 @@ async function CheckCollision(item, i) {
         highscore.innerHTML = 'HI:  ' + scorenr
         prevhigh = scorenr
   }
+
         x = false
         start = false
         Program()
@@ -223,7 +177,7 @@ async function moveSide() {
         floor2.style.left = floorpos2 + 'px'
 
         RandomLandscape()
-        document.querySelectorAll('.rep').forEach((item, i) => {
+        both_dinos.forEach((item, i) => {
           CheckCollision(item, i)
         })
         await sleep(1)
@@ -248,7 +202,7 @@ async function moveSide() {
           floor2.style.clip = 'rect(0px,600px,200px,' + frontlen + 'px)'
 
           RandomLandscape()
-          document.querySelectorAll('.rep').forEach((item, i) => {
+          both_dinos.forEach((item, i) => {
             CheckCollision(item, i)
           })
           await sleep(1)
@@ -306,8 +260,6 @@ async function Up(type, who, y, details) {
   for (let i = 0; i < type; i++) {
     if (start && lsdinosalive.includes(y)) {
 
-      if (parseInt(random.style.left) < 450 && parseInt(random.style.left) > 450 - (random.querySelector('rect').getAttribute('width'))) {tf = true}
-
       currentheight = parseInt(who.style.top)
     who.style.top = (currentheight - 5) + 'px'
     await sleep(7)
@@ -320,8 +272,6 @@ async function Down(type, who, y, details) {
   await sleep(80)
   for (let i = 0; i < type; i++) {
     if (start && lsdinosalive.includes(y)) {
-
-      if (parseInt(random.style.left) < 450 && parseInt(random.style.left) > 450 - (random.querySelector('rect').getAttribute('width'))) {tf = true}
 
       currentheight = parseInt(who.style.top)
     who.style.top = (currentheight + 5) + 'px'
@@ -358,6 +308,118 @@ async function SendRecieve(val, x, details) {
     }
   }
 }
+
+
+async function Up2(e, type) {
+  while (x) {
+    await sleep(1)
+  if (jump == false && done) {
+      jump = true
+      done = false
+      for (let i = 0; i < type; i++) {
+        if (start) {
+        jumpheight -= 5
+        dino.style.top = jumpheight + 'px'
+        await sleep(7)
+      }
+      }
+      done = true
+      break
+  }
+}
+}
+
+async function AddUp(e, type) {
+  while (x) {
+    await sleep(1)
+  if (done) {
+      done = false
+      for (let i = 0; i < type; i++) {
+        if (start) {
+        jumpheight -= 5
+        dino.style.top = jumpheight + 'px'
+        await sleep(7)
+      }
+      }
+    done = true
+    break
+  }
+}
+}
+
+async function Down2(e, type) {
+  while (x) {
+    await sleep(1)
+  if (done && jump) {
+    done = false
+      await sleep(80)
+      for (let i = 0; i < type; i++) {
+        if (start) {
+        jumpheight += 5
+        dino.style.top = jumpheight + 'px'
+        await sleep(7)
+      }
+      }
+      jump = false
+      done = true
+
+      if (start && lsdinosalive.includes(y)) {
+      lsdinosdown.push(y)
+    }
+
+      break
+  }
+}
+}
+
+document.addEventListener('keydown', async function (event) {
+  let left = window.getComputedStyle(document.getElementById("dino")).top
+  if (event.code == 'Space' && left == '400px') {
+    double += 1
+    timebetween = 0
+    already = false
+
+    // Standerd go up
+    if (double < 2) {
+      Up2(event, 30)
+      already = false
+  }
+
+  // When spacebar is held down
+  if (double > 1 && already == false && jump == false) {
+    Up2(event, 40)
+    Down2(event, 40)
+    already = true
+    jump = false
+    clearInterval(count)
+  }
+
+    // Timer
+    timebetween = 0
+    count = setInterval(function(){
+  timebetween++;
+  if (timebetween == 30 && double < 2 && already == false && jump) {
+    AddUp(event, 10)
+    Down2(event, 40)
+    already = true
+    clearInterval(count)
+  }
+}, 1);
+}})
+
+document.addEventListener('keyup', async function (event) {
+  timebetween = 0
+  let left = window.getComputedStyle(document.getElementById("dino")).top
+  if (event.code == 'Space') {
+
+      // Chooses small or big jump depending on time held down
+      if (already == false && double < 2) {
+        Down2(event, 30)
+      }
+      double = 0
+      already = true
+      clearInterval(count)
+}})
 
 moveSide()
 Score()
