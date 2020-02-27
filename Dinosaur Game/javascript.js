@@ -6,7 +6,7 @@ function difficultyScreen() {
 
 function Program() {
   let prevhigh = 0
-  let socket = new WebSocket("ws://localhost:8765/")
+  //let socket = new WebSocket("ws://localhost:8765/")
 
   let jump = false
   let jumpheight = 400
@@ -24,7 +24,8 @@ function Program() {
   let x = true
 
   let timebetween = 0
-  let count = null
+  let player_count = null
+  let ai_count = null
   let double = 0
   let done = true
   let already = false
@@ -36,8 +37,8 @@ function Program() {
   let randnr1 = Math.floor((Math.random() * 500) + 100)
 
   let randomnosvg = random.querySelector('rect')
-  let rect1 = {x: 420, y: jumpheight, width: 30, height: 55} // Dinosaur
-  let rect2 = {x: moveob, y: randomnosvg.getAttribute('top'), width: randomnosvg.getAttribute('width'), height: randomnosvg.getAttribute('height')} // Random obstacle
+  //let rect1 = {x: 420, y: jumpheight, width: 30, height: 55} // Dinosaur
+  //let rect2 = {x: moveob, y: randomnosvg.getAttribute('top'), width: randomnosvg.getAttribute('width'), height: randomnosvg.getAttribute('height')} // Random obstacle
   let style = window.getComputedStyle(random)
   let toprand = style.getPropertyValue('top')
   let backlenrand = randomnosvg.getAttribute('width')
@@ -96,13 +97,13 @@ async function CheckCollision(item, i) {
   randomnosvg = random.querySelector('rect')
   style = window.getComputedStyle(random)
   toprand = style.getPropertyValue('top')
-  rect1 = {x: 420, y: parseInt(item.style.top), width: 30, height: 55} // Dinosaur
-  rect2 = {x: moveob, y: parseInt(toprand), width: randomnosvg.getAttribute('width') * .5, height: randomnosvg.getAttribute('height')} // Random obstacle
+  rect_dino = {x: 420, y: parseInt(item.style.top), width: 30, height: 55} // Dinosaur
+  rect_wall = {x: moveob, y: parseInt(toprand), width: randomnosvg.getAttribute('width') * 1, height: randomnosvg.getAttribute('height') * 1} // Random obstacle
 
-  if (rect1.x < rect2.x + rect2.width &&
-     rect1.x + rect1.width > rect2.x &&
-     rect1.y < rect2.y + rect2.height &&
-     rect1.y + rect1.height > rect2.y &&
+  if (rect_dino.x < rect_wall.x + rect_wall.width &&
+     rect_dino.x + rect_dino.width > rect_wall.x &&
+     rect_dino.y < rect_wall.y + rect_wall.height &&
+     rect_dino.y + rect_dino.height > rect_wall.y &&
      lsdinosalive.includes(i)) {
 
       item.style.clip = 'rect(0px,600px,200px,200px)'
@@ -233,39 +234,69 @@ Score()
 
 Program()
 
-
 class Dino {
-  constructor(){
+  constructor() {
     this.height = 0;
     this.jump_speed = 0;
+    this.dino_acc = 1
   }
-  check_jump(){
+  check_jump() {
     if (this.jump_speed > 0 ){
       this.do_jump();
+    } else {
+      this.dino_acc = 1;
     }
   }
-  do_jump(){
+  do_jump() {
     this.height = this.jump_speed + this.height;
-    this.jump_speed = this.jump_speed - 1;
+    this.jump_speed = this.jump_speed - this.dino_acc;
+    if (this.jump_speed < 0) { this.jump_speed = 0; }
   }
-  jump(x){
+  jump(x) {
+    if (!this.isJumping()) { return false; }
+
+    this.dino_acc = 1;
     this.jump_speed = x;
+    return true;
+  }
+  gravity() {
+    if (this.height > 0) {this.height -= 10}
+    if (this.height < 0) {this.height = 0}
+  }
+  isJumping() {
+    return this.height == 0 && this.jump_speed == 0;
   }
 }
 
 dino_item = document.getElementById('dino')
 let dino = new Dino()
-let dino2 = new Dino()
-
-document.addEventListener('keydown', async function (event) {
-  if (event.code == 'Space') {
-    // Call jump method
-      dino.jump(15);
-}})
+let dino_ai = new Dino()
+let timebetween = 0
+let dino_ai_state = 0
+let player_count = setInterval(function(){
+      timebetween++;
+      if (timebetween > 30) {
+        dino.dino_acc = 0.5
+        clearInterval(player_count)
+      }
+    }, 1);
 
 function myMainLoop() {
   dino.check_jump();
-  console.log(dino)
+  dino.gravity()
+
+  // Only activate if space is held down and loop isn't allready running
+  if (timebetween == 0 && dino_ai_state == 1) {
+    // Timer
+    timebetween = 0
+    player_count = setInterval(function(){
+      timebetween++;
+      if (timebetween > 30) {
+        dino2.dino_acc = 0.5
+        clearInterval(player_count)
+      }
+    }, 1);
+  }
 }
 
 function displayDinos() {
@@ -273,5 +304,58 @@ function displayDinos() {
   elem.style.top = (400 - dino.height) + "px";
 }
 
-setInterval(myMainLoop, 40);
-setInterval(displayDinos, 40);
+setInterval(myMainLoop, 20);
+setInterval(displayDinos, 20);
+
+socket = new WebSocket("ws://localhost:8765")
+
+let ai_refresh_rate = 1000;
+
+socket.onopen = function() {
+  //console.log("WebSocket is open now.");
+  setInterval(function () {
+    //console.log("Sending map information")
+    map = "information to send to AI";
+    socket.send(map);
+  }, ai_refresh_rate);
+}
+
+socket.onmessage = async function (data) {
+  // console.debug("WebSocket message received:", event);
+  //console.debug(data);
+  if (data.data == "0") {
+    dino_ai_state = 0
+    clearInterval(player_count)
+    dino.dino_acc = 1
+  } else if (data.data == "1") {
+    if (!dino.jump(24)) {return}
+
+    dino_ai_state = 0
+
+  } else {
+    console.error("I have no clue what you're saying...");
+    console.error(data);
+    return;
+  }
+}
+
+document.addEventListener('keydown', async function (event) {
+  if (event.code == 'Space') {
+    if (!dino.jump(24)) {return}
+
+      // Timer
+    timebetween = 0
+    player_count = setInterval(function(){
+      timebetween++;
+      if (timebetween > 30) {
+        dino.dino_acc = 0.5
+        clearInterval(player_count)
+      }
+    }, 1);
+}})
+
+document.addEventListener('keyup', async function (event) {
+  if (event.code == 'Space') {
+    clearInterval(player_count);
+    player_count = null;
+}})
