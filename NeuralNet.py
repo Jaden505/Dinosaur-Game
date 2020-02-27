@@ -53,8 +53,9 @@ def shapeData():
     #rd1 = [[sigmoid(i) for i in x] for x in rd1]
     #rd3 = [[sigmoid(i) for i in x] for x in rd3]
 
-    rd1 = [i[1:] for i in rd1]
-    rd3 = [i[1:] for i in rd3]
+    # Removes first one in sublist
+    #rd1 = [i[1:] for i in rd1]
+    #rd3 = [i[1:] for i in rd3]
 
     x_train = np.array(rd1)
     y_train = np.array(rd2)
