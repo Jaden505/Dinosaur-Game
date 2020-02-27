@@ -1,4 +1,5 @@
 function startScreen() {
+
 }
 
 function difficultyScreen() {
@@ -6,7 +7,6 @@ function difficultyScreen() {
 
 function Program() {
   let prevhigh = 0
-  //let socket = new WebSocket("ws://localhost:8765/")
 
   let jump = false
   let jumpheight = 400
@@ -37,8 +37,6 @@ function Program() {
   let randnr1 = Math.floor((Math.random() * 500) + 100)
 
   let randomnosvg = random.querySelector('rect')
-  //let rect1 = {x: 420, y: jumpheight, width: 30, height: 55} // Dinosaur
-  //let rect2 = {x: moveob, y: randomnosvg.getAttribute('top'), width: randomnosvg.getAttribute('width'), height: randomnosvg.getAttribute('height')} // Random obstacle
   let style = window.getComputedStyle(random)
   let toprand = style.getPropertyValue('top')
   let backlenrand = randomnosvg.getAttribute('width')
@@ -234,6 +232,11 @@ Score()
 
 Program()
 
+
+
+
+
+// BOTH DINO MOVEMENT
 class Dino {
   constructor() {
     this.height = 0;
@@ -268,40 +271,41 @@ class Dino {
   }
 }
 
-dino_item = document.getElementById('dino')
 let dino = new Dino()
 let dino_ai = new Dino()
 let timebetween = 0
 let dino_ai_state = 0
-let player_count = setInterval(function(){
-      timebetween++;
-      if (timebetween > 30) {
-        dino.dino_acc = 0.5
-        clearInterval(player_count)
-      }
-    }, 1);
+let player_count = null
 
 function myMainLoop() {
   dino.check_jump();
   dino.gravity()
 
+  dino_ai.check_jump();
+  dino_ai.gravity()
+
   // Only activate if space is held down and loop isn't allready running
   if (timebetween == 0 && dino_ai_state == 1) {
+    console.log('Ai jump')
     // Timer
     timebetween = 0
     player_count = setInterval(function(){
       timebetween++;
       if (timebetween > 30) {
-        dino2.dino_acc = 0.5
+        dino_ai.dino_acc = 0.5
         clearInterval(player_count)
       }
     }, 1);
   }
+
 }
 
 function displayDinos() {
   elem = document.getElementById("dino");
   elem.style.top = (400 - dino.height) + "px";
+
+  elem_ai = document.getElementById('dino_ai');
+  elem_ai.style.top = (400 - dino_ai.height) + "px";
 }
 
 setInterval(myMainLoop, 20);
@@ -326,11 +330,9 @@ socket.onmessage = async function (data) {
   if (data.data == "0") {
     dino_ai_state = 0
     clearInterval(player_count)
-    dino.dino_acc = 1
+    dino_ai.dino_acc = 1
   } else if (data.data == "1") {
-    if (!dino.jump(24)) {return}
-
-    dino_ai_state = 0
+    if (!dino_ai.jump(24)) {return}
 
   } else {
     console.error("I have no clue what you're saying...");

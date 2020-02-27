@@ -53,8 +53,8 @@ def shapeData():
     #rd1 = [[sigmoid(i) for i in x] for x in rd1]
     #rd3 = [[sigmoid(i) for i in x] for x in rd3]
 
-    print(rd1)
-    print(rd3)
+    rd1 = [i[1:] for i in rd1]
+    rd3 = [i[1:] for i in rd3]
 
     x_train = np.array(rd1)
     y_train = np.array(rd2)
@@ -81,7 +81,7 @@ def shapeData():
                   loss=loss_fn,
                   metrics=['accuracy'])
 
-    model.fit(x_train, y_train, epochs=10, batch_size=50)
+    model.fit(x_train, y_train, epochs=30, batch_size=50)
 
     predictions = model.predict([x_test])
     for i in range(20):
