@@ -1,3 +1,4 @@
+import pickle
 import tensorflow as tf
 import numpy as np
 from tensorflow import keras
@@ -7,7 +8,7 @@ import ast
 #from numpy import loadtxt
 #import csv
 from tensorflow.keras.models import load_model
-
+from tensorflow.keras.models import model_from_json
 
 def sigmoid(x):
     return 1.0/(1 + np.exp(-x))
@@ -67,7 +68,7 @@ def shapeData():
     print(x_test)
 
     model = tf.keras.models.Sequential([
-        tf.keras.layers.Flatten(),
+        tf.keras.layers.Flatten(input_shape=(4,)),
         tf.keras.layers.Dense(128, activation='relu'),
         tf.keras.layers.Dropout(0.2),
         tf.keras.layers.Dense(3)
@@ -92,6 +93,15 @@ def shapeData():
         print('\n')
 
     print("Evaluation: ", model.evaluate(x_test,  y_test, verbose=2))
+    import pdb; pdb.set_trace()
+
+    #model_json = model.to_json()
+
+    #with open("model.json", "w") as json_file:
+        #json_file.write(model_json)
+
+    #model.save_weights("model.h5")
+
 
 
 shapeData()
