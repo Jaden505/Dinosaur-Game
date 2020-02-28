@@ -22,6 +22,7 @@ def shapeData():
     rd1 = list(rd1)
 
     jump_train.close()
+    #Test
 
 
     # Train file y
