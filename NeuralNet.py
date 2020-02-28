@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import ast
 #from numpy import loadtxt
 #import csv
+from tensorflow.keras.models import load_model
 
 
 def sigmoid(x):
@@ -13,7 +14,7 @@ def sigmoid(x):
 
 def shapeData():
     # Train file x
-    jump_train = open('Data_storage/datajump.csv', 'r')
+    jump_train = open('Data_storage/datajump_train.csv', 'r')
 
     rd1 =jump_train.read()
     rd1 = ast.literal_eval(rd1)
@@ -23,7 +24,7 @@ def shapeData():
 
 
     # Train file y
-    jump_train = open('Data_storage/datatype.csv', 'r')
+    jump_train = open('Data_storage/datatype_train.csv', 'r')
 
     rd2 =jump_train.read()
     rd2 = ast.literal_eval(rd2)
@@ -91,5 +92,6 @@ def shapeData():
         print('\n')
 
     print("Evaluation: ", model.evaluate(x_test,  y_test, verbose=2))
+
 
 shapeData()
