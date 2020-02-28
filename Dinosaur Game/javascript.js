@@ -5,8 +5,11 @@ function startScreen() {
 function difficultyScreen() {
 }
 
+let prevhigh = 0
+
 function Program() {
-  let prevhigh = 0
+
+  let socket = new WebSocket("ws://localhost:8765")
 
   let jump = false
   let jumpheight = 400
@@ -70,6 +73,10 @@ function Program() {
   let dino_ai = document.getElementById('dino_ai')
   let both_dinos = [dino, dino_ai]
   let dino_ai_ls = [dino_ai]
+
+  let dino_ai_state = 0
+  let timebetween2 = 0
+  let ai_refresh_rate = 1000;
 
   both_dinos.forEach((item, i) => {
   item.style.left = '420px'
@@ -226,17 +233,111 @@ async function RandomLandscape() {
   if (moveob > 960) {random.style.clip = 'rect(0px,100px,100px,100px)'}
 }
 
-moveSide()
-Score()
+// BOTH DINO MOVEMENT
+
+function myMainLoop() {
+  dino_class.check_jump();
+  dino_class.gravity()
+
+  dino_class_ai.check_jump();
+  dino_class_ai.gravity()
+  console.log('Dino height: ' + dino_class_ai.height)
+  //console.log('Push down')
+
+  // Guard
+  if (dino_class_ai.jump(24) && dino_ai_state == 1 && start) {
+
+    // Timer
+    timebetween_ai = 0
+    ai_count = setInterval(function(){
+      timebetween++;
+      if (dino_ai_state != 1 && start) {
+        clearInterval(ai_count)
+        return
+      }
+      if (timebetween > 30 && start) {
+        dino_class_ai.dino_acc = 0.5
+        clearInterval(ai_count)
+      }
+    }, 1);
+  }
 }
 
-Program()
+function displayDinos() {
+  elem = document.getElementById("dino");
+  elem.style.top = (400 - dino_class.height) + "px";
+
+  elem_ai = document.getElementById('dino_ai');
+  elem_ai.style.top = (400 - dino_class_ai.height) + "px";
+}
+
+setInterval(myMainLoop, 20);
+setInterval(displayDinos, 20);
+
+socket.onopen = function() {
+  if (lsdinosalive.includes(1) && start) {
+  //console.log("WebSocket is open now.");
+  setInterval(function () {
+    //console.log("Sending map information")
+
+    prediction_data = [Math.round(speedmove * 10 ) / 10, Math.round(parseInt(random.style.left)),parseInt(random.querySelector('rect').getAttribute('width')), parseInt(random.querySelector('rect').getAttribute('height'))]
+    //console.log(prediction_data)
+    socket.send(prediction_data)
+
+  }, ai_refresh_rate);
+}
+}
+
+socket.onmessage = function (data) {
+  //console.debug("WebSocket message received:", event);
+  //console.log(data.data);
+  if (lsdinosalive.includes(1) && start) {
+  if (data.data == 0 && start) {
+    dino_ai_state = 0
+    clearInterval(player_count)
+    dino_class_ai.dino_acc = 1
+    console.log('DONT MOVE')
+  } else if (data.data == 1 && start) {
+    console.log('JUMP')
+    dino_ai_state = 1
+    dino_class_ai.jump(24)
+
+  } else {
+    console.error("I have no clue what you're saying...");
+    console.error(data);
+    return;
+  }
+}
+}
+
+// Event listners for the interactive AI
+document.addEventListener('keydown', async function (event) {
+  if (event.code == 'Space') {
+    if (!dino_class.jump(24)) {return}
+
+      // Timer
+      timebetween = 0
+    player_count = setInterval(function(){
+      timebetween++;
+      if (timebetween > 30) {
+        dino_class.dino_acc = 0.5
+        clearInterval(player_count)
+      }
+    }, 1);
+}})
+
+document.addEventListener('keyup', async function (event) {
+  if (event.code == 'Space') {
+    clearInterval(player_count);
+    player_count = null;
+}})
 
 
+moveSide()
+Score()
 
+}
 
-
-// BOTH DINO MOVEMENT
 class Dino {
   constructor() {
     this.height = 0;
@@ -244,7 +345,7 @@ class Dino {
     this.dino_acc = 1
   }
   check_jump() {
-    if (this.jump_speed > 0 ){
+    if (this.jump_speed > 0){
       this.do_jump();
     } else {
       this.dino_acc = 1;
@@ -256,108 +357,19 @@ class Dino {
     if (this.jump_speed < 0) { this.jump_speed = 0; }
   }
   jump(x) {
-    if (!this.isJumping()) { return false; }
-
-    this.dino_acc = 1;
-    this.jump_speed = x;
-    return true;
+    if (this.jump_speed == 0  && this.height == 0) {
+      this.dino_acc = 1;
+      this.jump_speed = x;
+      return true;
+    }
   }
   gravity() {
     if (this.height > 0) {this.height -= 10}
     if (this.height < 0) {this.height = 0}
   }
-  isJumping() {
-    return this.height == 0 && this.jump_speed == 0;
-  }
 }
 
-let dino = new Dino()
-let dino_ai = new Dino()
-let timebetween = 0
-let dino_ai_state = 0
-let player_count = null
+let dino_class = new Dino()
+let dino_class_ai = new Dino()
 
-function myMainLoop() {
-  dino.check_jump();
-  dino.gravity()
-
-  dino_ai.check_jump();
-  dino_ai.gravity()
-
-  // Only activate if space is held down and loop isn't allready running
-  if (timebetween == 0 && dino_ai_state == 1) {
-    console.log('Ai jump')
-    // Timer
-    timebetween = 0
-    player_count = setInterval(function(){
-      timebetween++;
-      if (timebetween > 30) {
-        dino_ai.dino_acc = 0.5
-        clearInterval(player_count)
-      }
-    }, 1);
-  }
-
-}
-
-function displayDinos() {
-  elem = document.getElementById("dino");
-  elem.style.top = (400 - dino.height) + "px";
-
-  elem_ai = document.getElementById('dino_ai');
-  elem_ai.style.top = (400 - dino_ai.height) + "px";
-}
-
-setInterval(myMainLoop, 20);
-setInterval(displayDinos, 20);
-
-socket = new WebSocket("ws://localhost:8765")
-
-let ai_refresh_rate = 1000;
-
-socket.onopen = function() {
-  //console.log("WebSocket is open now.");
-  setInterval(function () {
-    //console.log("Sending map information")
-    map = "information to send to AI";
-    socket.send(map);
-  }, ai_refresh_rate);
-}
-
-socket.onmessage = async function (data) {
-  // console.debug("WebSocket message received:", event);
-  //console.debug(data);
-  if (data.data == "0") {
-    dino_ai_state = 0
-    clearInterval(player_count)
-    dino_ai.dino_acc = 1
-  } else if (data.data == "1") {
-    if (!dino_ai.jump(24)) {return}
-
-  } else {
-    console.error("I have no clue what you're saying...");
-    console.error(data);
-    return;
-  }
-}
-
-document.addEventListener('keydown', async function (event) {
-  if (event.code == 'Space') {
-    if (!dino.jump(24)) {return}
-
-      // Timer
-    timebetween = 0
-    player_count = setInterval(function(){
-      timebetween++;
-      if (timebetween > 30) {
-        dino.dino_acc = 0.5
-        clearInterval(player_count)
-      }
-    }, 1);
-}})
-
-document.addEventListener('keyup', async function (event) {
-  if (event.code == 'Space') {
-    clearInterval(player_count);
-    player_count = null;
-}})
+Program()
