@@ -137,7 +137,6 @@ async function moveSide() {
     start = true
     // Movement loop
     while (x) {
-
       while (frontlen <= 600 && start) {
         // Move line 1 to left and keep in same place
         floorpos -= speedmove
@@ -281,6 +280,7 @@ let dino_ai = new Dino()
 let timebetween = 0
 let dino_ai_state = 0
 let player_count = null
+let ai_refresh_rate = 200;
 
 function myMainLoop() {
   dino.check_jump();
@@ -318,13 +318,12 @@ setInterval(displayDinos, 20);
 
 socket = new WebSocket("ws://localhost:8765")
 
-let ai_refresh_rate = 200;
-
 socket.onopen = function() {
   //console.log("WebSocket is open now.");
   setInterval(function () {
-    //console.log("Sending map information")
-    prediction_data = [Math.round(speedmove * 10 ) / 10, Math.round(parseInt(random.style.left)),parseInt(random.querySelector('rect').getAttribute('width')), parseInt(random.querySelector('rect').getAttribute('height'))]
+    obs_pos = Math.round(parseInt(random.style.left)) || 0
+    prediction_data = [Math.round(speedmove * 10 ) / 10, obs_pos,parseInt(random.querySelector('rect').getAttribute('width')), parseInt(random.querySelector('rect').getAttribute('height'))]
+    //console.log(prediction_data)
     socket.send(prediction_data);
   }, ai_refresh_rate);
 }
