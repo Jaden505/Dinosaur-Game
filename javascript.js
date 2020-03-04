@@ -5,8 +5,13 @@ function startScreen() {
 function difficultyScreen() {
 }
 
+let prevhigh = 0
+
+let speedmove = 1
+let rects = document.getElementById('first').querySelectorAll('svg')
+let random = rects[Math.floor(Math.random() * rects.length)]
+
 function Program() {
-  let prevhigh = 0
 
   let jump = false
   let jumpheight = 400
@@ -19,7 +24,7 @@ function Program() {
   let floorpos2 = 960
   let frontlen = 0
 
-  let speedmove = 1
+  speedmove = 1
   let start = false
   let x = true
 
@@ -31,8 +36,8 @@ function Program() {
   let already = false
   let startops = false
 
-  let rects = document.getElementById('first').querySelectorAll('svg')
-  let random = rects[Math.floor(Math.random() * rects.length)]
+  rects = document.getElementById('first').querySelectorAll('svg')
+  random = rects[Math.floor(Math.random() * rects.length)]
   let moveob = 360
   let randnr1 = Math.floor((Math.random() * 500) + 100)
 
@@ -313,14 +318,14 @@ setInterval(displayDinos, 20);
 
 socket = new WebSocket("ws://localhost:8765")
 
-let ai_refresh_rate = 1000;
+let ai_refresh_rate = 200;
 
 socket.onopen = function() {
   //console.log("WebSocket is open now.");
   setInterval(function () {
     //console.log("Sending map information")
-    map = "information to send to AI";
-    socket.send(map);
+    prediction_data = [Math.round(speedmove * 10 ) / 10, Math.round(parseInt(random.style.left)),parseInt(random.querySelector('rect').getAttribute('width')), parseInt(random.querySelector('rect').getAttribute('height'))]
+    socket.send(prediction_data);
   }, ai_refresh_rate);
 }
 
