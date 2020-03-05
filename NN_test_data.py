@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import ast
 #from numpy import loadtxt
 #import csv
-
+import pickle
 
 def sigmoid(x):
     return 1.0/(1 + np.exp(-x))
@@ -60,6 +60,12 @@ def shapeData():
         print(x_train[i])
         print('\n')
 
-    #model.save('Second_model')
+    model.save('Third_model')
+
+    with open('tokenizer.pickle', 'wb') as handle:
+        pickle.dump(handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 shapeData()
+
+
+# NEED TOKENIZER

@@ -236,10 +236,6 @@ Score()
 
 Program()
 
-
-
-
-
 // BOTH DINO MOVEMENT
 class Dino {
   constructor() {
@@ -280,7 +276,8 @@ let dino_ai = new Dino()
 let timebetween = 0
 let dino_ai_state = 0
 let player_count = null
-let ai_refresh_rate = 200;
+let ai_count = null
+let ai_refresh_rate = 20;
 
 function myMainLoop() {
   dino.check_jump();
@@ -289,19 +286,20 @@ function myMainLoop() {
   dino_ai.check_jump();
   dino_ai.gravity()
 
-  // Only activate if space is held down and loop isn't allready running
-  if (timebetween == 0 && dino_ai_state == 1) {
-    console.log('Ai jump')
-    // Timer
-    timebetween = 0
-    player_count = setInterval(function(){
-      timebetween++;
-      if (timebetween > 30) {
-        dino_ai.dino_acc = 0.5
-        clearInterval(player_count)
-      }
-    }, 1);
-  }
+  // //Only activate if space is held down and loop isn't allready running
+  // if (timebetween == 0 && dino_ai_state == 1) {
+  //   console.log('Ai big jump')
+  //   // Timer
+  //   timebetween = 0
+  //   ai_count = setInterval(function(){
+  //     timebetween++;
+  //     if (timebetween >= 30) {
+  //       dino_ai.dino_acc = 0.5
+  //       timebetween = 0
+  //       clearInterval(ai_count)
+  //     }
+  //   }, 1);
+  // }
 
 }
 
@@ -333,9 +331,11 @@ socket.onmessage = async function (data) {
   //console.debug(data);
   if (data.data == "0") {
     dino_ai_state = 0
-    clearInterval(player_count)
+    clearInterval(ai_count)
+    timebetween = 0
     dino_ai.dino_acc = 1
   } else if (data.data == "1") {
+    dino_ai_state = 1
     if (!dino_ai.jump(24)) {return}
 
   } else {
