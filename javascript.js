@@ -28,7 +28,7 @@ function Program() {
   let start = false
   let x = true
 
-  let timebetween = 0
+  let player_jump_timer = 0
   let player_count = null
   let ai_count = null
   let double = 0
@@ -273,7 +273,8 @@ class Dino {
 
 let dino = new Dino()
 let dino_ai = new Dino()
-let timebetween = 0
+let player_jump_timer = 0
+let ai_jump_timer = 0
 let dino_ai_state = 0
 let player_count = null
 let ai_count = null
@@ -287,28 +288,25 @@ function myMainLoop() {
   dino_ai.gravity()
 
   // //Only activate if space is held down and loop isn't allready running
-  // if (timebetween == 0 && dino_ai_state == 1) {
-  //   console.log('Ai big jump')
+  // if (ai_jump_timer == 0 && dino_ai_state == 1) {
   //   // Timer
-  //   timebetween = 0
+  //   ai_jump_timer = 0
   //   ai_count = setInterval(function(){
-  //     timebetween++;
-  //     if (timebetween >= 30) {
-  //       dino_ai.dino_acc = 0.5
-  //       timebetween = 0
+  //     ai_jump_timer++;
+  //     if (ai_jump_timer >= 30 && dino_ai_state == 0) {
+  //       dino_ai.dino_acc = 0.6
+  //       console.log('big')
+  //       ai_jump_timer = 0
   //       clearInterval(ai_count)
   //     }
   //   }, 1);
   // }
-
 }
 
 function displayDinos() {
-  elem = document.getElementById("dino");
-  elem.style.top = (400 - dino.height) + "px";
+  document.getElementById("dino").style.top = (400 - dino.height) + "px";
 
-  elem_ai = document.getElementById('dino_ai');
-  elem_ai.style.top = (400 - dino_ai.height) + "px";
+  document.getElementById('dino_ai').style.top = (400 - dino_ai.height) + "px";
 }
 
 setInterval(myMainLoop, 20);
@@ -327,17 +325,16 @@ socket.onopen = function() {
 }
 
 socket.onmessage = async function (data) {
-  // console.debug("WebSocket message received:", event);
-  //console.debug(data);
+  // console.log(data)
   if (data.data == "0") {
     dino_ai_state = 0
     clearInterval(ai_count)
-    timebetween = 0
-    dino_ai.dino_acc = 1
+    ai_jump_timer = 0
+    //dino_ai.dino_acc = 1
   } else if (data.data == "1") {
     dino_ai_state = 1
     if (!dino_ai.jump(24)) {return}
-
+    dino_ai.dino_acc = 0.8
   } else {
     console.error("I have no clue what you're saying...");
     console.error(data);
@@ -350,11 +347,11 @@ document.addEventListener('keydown', async function (event) {
     if (!dino.jump(24)) {return}
 
       // Timer
-    timebetween = 0
+    player_jump_timer = 0
     player_count = setInterval(function(){
-      timebetween++;
-      if (timebetween > 30) {
-        dino.dino_acc = 0.5
+      player_jump_timer++;
+      if (player_jump_timer > 30) {
+        dino.dino_acc = 0.6
         clearInterval(player_count)
       }
     }, 1);

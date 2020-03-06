@@ -2,10 +2,8 @@ import tensorflow as tf
 import numpy as np
 from tensorflow import keras
 import matplotlib.pyplot as plt
-#import os
+from tensorflow.keras.models import load_model
 import ast
-#from numpy import loadtxt
-#import csv
 import pickle
 
 def sigmoid(x):
@@ -51,19 +49,26 @@ def shapeData():
                   metrics=['accuracy'])
 
     model.fit(x_train, y_train, epochs=50, batch_size=10)
-    print(np.argmax(model.predict([])))
 
-    predictions = model.predict([x_train])
+    model.save('my.second.model')
+    del model
+
+    SaveLoad(x_train, y_train)
+
+def SaveLoad(x_train, y_train):
+    loaded_model = load_model('my.second.model')
+
+    loaded_model.fit(x_train, y_train, epochs=50, batch_size=10)
+
+    loaded_model.summary()
+
+    # Predict loaded model
+    predictions = loaded_model.predict([x_train])
     for i in range(20):
         print(np.argmax(predictions[i]))
         print(y_train[i])
         print(x_train[i])
         print('\n')
-
-    model.save('Third_model')
-
-    with open('tokenizer.pickle', 'wb') as handle:
-        pickle.dump(handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 shapeData()
 
