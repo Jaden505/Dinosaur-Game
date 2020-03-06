@@ -1,8 +1,22 @@
-function startScreen() {
+let diff_easy_button = document.getElementById('diff_easy_button')
+let start_button = document.getElementById('start')
+let floor2 = document.getElementById('floor2')
 
-}
+diff_easy_button.style.display = 'none'
+floor2.style.display = 'none'
 
 function difficultyScreen() {
+  start_button.style.display = 'none'
+
+  diff_easy_button.style.display = 'inline-block'
+}
+
+function BeginGame() {
+  diff_easy_button.style.display = 'none'
+  floor2.style.display = 'block'
+
+  Program()
+  EventHandlers()
 }
 
 let prevhigh = 0
@@ -234,7 +248,7 @@ moveSide()
 Score()
 }
 
-Program()
+async function EventHandlers() {
 
 // BOTH DINO MOVEMENT
 class Dino {
@@ -334,7 +348,7 @@ socket.onmessage = async function (data) {
   } else if (data.data == "1") {
     dino_ai_state = 1
     if (!dino_ai.jump(24)) {return}
-    dino_ai.dino_acc = 0.8
+    dino_ai.dino_acc = 0.6
   } else {
     console.error("I have no clue what you're saying...");
     console.error(data);
@@ -362,3 +376,4 @@ document.addEventListener('keyup', async function (event) {
     clearInterval(player_count);
     player_count = null;
 }})
+}

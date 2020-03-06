@@ -25,7 +25,7 @@ rd2 = list(rd2)
 jump_train.close()
 
 # Test file x
-jump_test = open('datajump.csv', 'r')
+jump_test = open('datajump (13).csv', 'r')
 
 rd3 = jump_test.read()
 rd3 = ast.literal_eval(rd3)
@@ -34,7 +34,7 @@ rd3 = list(rd3)
 jump_test.close()
 
 # Test file y
-jump_test = open('datatype.csv', 'r')
+jump_test = open('datatype (11).csv', 'r')
 
 rd4 = jump_test.read()
 rd4 = ast.literal_eval(rd4)
@@ -47,7 +47,7 @@ y_train = np.array(rd2)
 x_test = np.array(rd3)
 y_test = np.array(rd4)
 
-loaded_model = load_model('my.second.model')
+loaded_model = load_model('my.third.model')
 
 loaded_model.fit(x_train, y_train, epochs=50, batch_size=10)
 
@@ -72,7 +72,7 @@ async def Answer(websocket, path):
         jump = np.argmax(jump)
 
         await websocket.send(str(jump))
-        print(str(jump))
+        #print(str(jump))
 
 def run():
     start_server = websockets.serve(Answer, "localhost", 8765)
