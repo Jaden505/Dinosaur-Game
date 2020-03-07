@@ -331,7 +331,7 @@ socket = new WebSocket("ws://localhost:8765")
 socket.onopen = function() {
   //console.log("WebSocket is open now.");
   setInterval(function () {
-    obs_pos = Math.round(parseInt(random.style.left)) || 0
+    obs_pos = Math.round(parseInt(random.style.left)) || 1000
     prediction_data = [Math.round(speedmove * 10 ) / 10, obs_pos,parseInt(random.querySelector('rect').getAttribute('width')), parseInt(random.querySelector('rect').getAttribute('height'))]
     //console.log(prediction_data)
     socket.send(prediction_data);
@@ -348,7 +348,7 @@ socket.onmessage = async function (data) {
   } else if (data.data == "1") {
     dino_ai_state = 1
     if (!dino_ai.jump(24)) {return}
-    dino_ai.dino_acc = 0.6
+    dino_ai.dino_acc = 0.7
   } else {
     console.error("I have no clue what you're saying...");
     console.error(data);
