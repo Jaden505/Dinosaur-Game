@@ -1,190 +1,107 @@
-// Doesnt change the values on restart game
-let prevhigh = 0
 let jump_train = []
 let typejump_train = []
 
-// Shows data on click
-document.addEventListener('keypress', async function (event) {
-  if (event.code == 'Space') {
-    let zeros = 0
-    let ones = 0
-
-    // Checks amount of zeros and ones in list
-    for (let i = 0; i <= typejump_train.length; i++) {
-      if (typejump_train[i] == 0) {zeros += 1}
-      else if (typejump_train[i] == 1) {ones += 1}
-    };
-    //console.log(zeros, ones)
-
-    // Makes amount zeros and ones equal in list
-    while (zeros > ones) {
-      random_remove = Math.floor(Math.random()*((typejump_train.length - 1) - 0+1)+0)
-      if (typejump_train[random_remove] == 0) {
-        zeros -= 1
-        jump_train.splice(random_remove, 1)
-        typejump_train.splice(random_remove, 1)
-      }
-    }
-    //console.log(zeros, ones)
-
-    download(jump_train, 'datajump.csv', 'application/msword')
-    download(typejump_train, 'datatype.csv', 'application/msword')
-  };
-})
-
-// Download data
-function download(strData, strFileName, strMimeType) {
-var D = document,
-    A = arguments,
-    a = D.createElement("a"),
-    d = A[0],
-    n = A[1],
-    t = A[2] || "text/plain";
-
-//build download link:
-a.href = "data:" + strMimeType + "charset=utf-8," + escape(strData);
-
-if (window.MSBlobBuilder) { // IE10
-    var bb = new MSBlobBuilder();
-    bb.append(strData);
-    return navigator.msSaveBlob(bb, strFileName);
-} /* end if(window.MSBlobBuilder) */
-
-if ('download' in a) { //FF20, CH19
-    a.setAttribute("download", n);
-    a.innerHTML = "downloading...";
-    D.body.appendChild(a);
-    setTimeout(function() {
-        var e = D.createEvent("MouseEvents");
-        e.initMouseEvent("click", true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
-        a.dispatchEvent(e);
-        D.body.removeChild(a);
-    }, 66);
-    return true;
-}; /* end if('download' in a) */
-
-//do iframe dataURL download: (older W3)
-var f = D.createElement("iframe");
-D.body.appendChild(f);
-f.src = "data:" + (A[2] ? A[2] : "application/octet-stream") + (window.btoa ? ";base64" : "") + "," + (window.btoa ? window.btoa : escape)(strData);
-setTimeout(function() {
-    D.body.removeChild(f);
-}, 333);
-return true;
-}
-//download(jump_train, 'data.txt', 'text/plain')
-
-// Download data
-function download(strData, strFileName, strMimeType) {
-var D = document,
-    A = arguments,
-    a = D.createElement("a"),
-    d = A[0],
-    n = A[1],
-    t = A[2] || "text/plain";
-
-//build download link:
-a.href = "data:" + strMimeType + "charset=utf-8," + escape(strData);
-
-if (window.MSBlobBuilder) { // IE10
-    var bb = new MSBlobBuilder();
-    bb.append(strData);
-    return navigator.msSaveBlob(bb, strFileName);
-} /* end if(window.MSBlobBuilder) */
-
-if ('download' in a) { //FF20, CH19
-    a.setAttribute("download", n);
-    a.innerHTML = "downloading...";
-    D.body.appendChild(a);
-    setTimeout(function() {
-        var e = D.createEvent("MouseEvents");
-        e.initMouseEvent("click", true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
-        a.dispatchEvent(e);
-        D.body.removeChild(a);
-    }, 66);
-    return true;
-}; /* end if('download' in a) */
-
-//do iframe dataURL download: (older W3)
-var f = D.createElement("iframe");
-D.body.appendChild(f);
-f.src = "data:" + (A[2] ? A[2] : "application/octet-stream") + (window.btoa ? ";base64" : "") + "," + (window.btoa ? window.btoa : escape)(strData);
-setTimeout(function() {
-    D.body.removeChild(f);
-}, 333);
-return true;
-}
-
-async function Program() {
-let jump = false
-let dinosaur = document.getElementById('dinosaur')
-let jumpheight = 400
-
-let floor = document.getElementById('floor')
-let floorpos = 360
-let backlen = 0
-
+let diff_easy_button = document.getElementById('diff_easy_button')
+let diff_medium_button = document.getElementById('diff_medium_button')
+let diff_hard_button = document.getElementById('diff_hard_button')
+let start_button = document.getElementById('start')
 let floor2 = document.getElementById('floor2')
-let floorpos2 = 960
-let frontlen = 0
+
+diff_easy_button.style.display = 'none'
+diff_medium_button.style.display = 'none'
+diff_hard_button.style.display = 'none'
+floor2.style.display = 'none'
+
+function difficultyScreen() {
+  start_button.style.display = 'none'
+
+  diff_easy_button.style.display = 'inline-block'
+  diff_medium_button.style.display = 'inline-block'
+  diff_hard_button.style.display = 'inline-block'
+}
+
+function BeginGame(diff) {
+  diff_easy_button.style.display = 'none'
+  diff_medium_button.style.display = 'none'
+  diff_hard_button.style.display = 'none'
+  floor2.style.display = 'block'
+
+  Program()
+  EventHandlers(diff)
+}
+
+let prevhigh = 0
 
 let speedmove = 1
-let start = false
-let x = true
-
-let timebetween = 0
-let count = null
-let double = 0
-let done = true
-let already = false
-let startops = false
-
 let rects = document.getElementById('first').querySelectorAll('svg')
 let random = rects[Math.floor(Math.random() * rects.length)]
 let moveob = 360
-let randnr1 = Math.floor((Math.random() * 500) + 100)
 
-let randomnosvg = random.querySelector('rect')
-let rect1 = {x: 420, y: jumpheight, width: 30, height: 55} // Dinosaur
-let rect2 = {x: moveob, y: randomnosvg.getAttribute('top'), width: randomnosvg.getAttribute('width'), height: randomnosvg.getAttribute('height')} // Random obstacle
-let style = window.getComputedStyle(random)
-let toprand = style.getPropertyValue('top')
-let backlenrand = randomnosvg.getAttribute('width')
-let frontlenrand = 0
+function Program() {
+  let jump = false
+  let jumpheight = 400
 
-let score = document.getElementById('score')
-let scorenr = 0
-let zero = '0'
-let startscore = false
+  let floor = document.getElementById('floor')
+  let floorpos = 360
+  let backlen = 0
 
-let data = []
-let choices = [35, 35]
-let listnr = []
-let dict = {}
-let zerotwols = [2.5, 2.5]
-let zerotwo = zerotwols[Math.floor(Math.random() * zerotwols.length)]
-let colors = ['255,0,0', '0,255,0', '0,0,255', '165, 3, 252', '252, 3, 240', '252, 144, 3']
-let randcolor = colors[Math.floor(Math.random() * colors.length)]
+  let floor2 = document.getElementById('floor2')
+  let floorpos2 = 960
+  let frontlen = 0
 
-let lsdinosdown = []
-let lsdinosalive = []
-let obstaclejumps = []
-let numberdown = 0
-let highscore = document.getElementById('highscore')
-let tf = false
-let details = []
-let optionsls = [1, 2, 3]
-let rounded = Math.round(speedmove * 10 ) / 10
+  speedmove = 1
+  let start = false
+  let x = true
 
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
+  let player_jump_timer = 0
+  let player_count = null
+  let ai_count = null
+  let double = 0
+  let done = true
+  let already = false
+  let startops = false
 
-rects.forEach(element =>
-  element.style.display = 'none'
-)
+  rects = document.getElementById('first').querySelectorAll('svg')
+  random = rects[Math.floor(Math.random() * rects.length)]
+  moveob = 360
+  let randnr1 = Math.floor((Math.random() * 500) + 100)
 
-document.querySelectorAll('.rep').forEach((item, i) => {
+  let randomnosvg = random.querySelector('rect')
+  let style = window.getComputedStyle(random)
+  let toprand = style.getPropertyValue('top')
+  let backlenrand = randomnosvg.getAttribute('width')
+  let frontlenrand = 0
+
+  let score = document.getElementById('score')
+  let scorenr = 0
+  let zero = '0'
+  let startscore = false
+
+  let data = []
+  let choices = [25, 35]
+  let listnr = []
+  let dict = {}
+  let zerotwols = [0, 2.5]
+  let zerotwo = zerotwols[Math.floor(Math.random() * zerotwols.length)]
+  let colors = ['255,0,0', '0,255,0', '0,0,255', '165, 3, 252', '252, 3, 240', '252, 144, 3']
+  let randcolor = colors[Math.floor(Math.random() * colors.length)]
+
+  let lsdinosdown = []
+  let lsdinosalive = []
+  let obstaclejumps = []
+  let numberdown = 0
+  let highscore = document.getElementById('highscore')
+  let tf = false
+  let details = []
+  let optionsls = [1, 2, 3]
+  let rounded = Math.round(speedmove * 10 ) / 10
+
+  let dino = document.getElementById('dino')
+  let dino_ai = document.getElementById('dino_ai')
+  let both_dinos = [dino, dino_ai]
+  let dino_ai_ls = [dino_ai]
+
+  both_dinos.forEach((item, i) => {
   item.style.left = '420px'
   item.style.top = '400px'
   randcolor = colors[Math.floor(Math.random() * colors.length)]
@@ -196,51 +113,28 @@ document.querySelectorAll('.rep').forEach((item, i) => {
   }
 })
 
-async function Neurons() {
-  numberdown = 0
-  lsdinosdown = []
-
-  async function asyncForEach(array, callback) {
-    for (let index = 0; index < array.length; index++) {
-      await callback(array[index], index, array);
-    }
-  }
-
-     start = async () => {
-    await asyncForEach(document.querySelectorAll('.rep'), async (val, x) => {
-      if (val.tagName != 'rect' && val.style.clip == 'inherit' && start) {
-      choicebm = choices[Math.floor(Math.random() * choices.length)]
-
-      obstaclejumps.push(x)
-      tf = false
-
-    // Random pick jump
-    rounded = Math.round(speedmove * 10 ) / 10
-    details = [rounded, Math.round(parseInt(random.style.left)),
-       parseInt(random.querySelector('rect').getAttribute('width')), parseInt(random.querySelector('rect').getAttribute('height'))]
-    Up(choicebm, val, x, details)
-
-      await sleep(50 / speedmove)
-      }
-    })
-  }
-  start();
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
+
+rects.forEach(element =>
+  element.style.display = 'none'
+)
 
 async function CheckCollision(item, i) {
   randomnosvg = random.querySelector('rect')
   style = window.getComputedStyle(random)
   toprand = style.getPropertyValue('top')
-  rect1 = {x: 420, y: parseInt(item.style.top), width: 30, height: 55} // Dinosaur
-  rect2 = {x: moveob, y: parseInt(toprand), width: randomnosvg.getAttribute('width') * .5, height: randomnosvg.getAttribute('height')} // Random obstacle
+  rect_dino = {x: 420, y: parseInt(item.style.top), width: 30, height: 55} // Dinosaur
+  rect_wall = {x: moveob, y: parseInt(toprand), width: randomnosvg.getAttribute('width') * 1, height: randomnosvg.getAttribute('height') * 1} // Random obstacle
 
-  if (rect1.x < rect2.x + rect2.width &&
-     rect1.x + rect1.width > rect2.x &&
-     rect1.y < rect2.y + rect2.height &&
-     rect1.y + rect1.height > rect2.y &&
+  if (rect_dino.x < rect_wall.x + rect_wall.width &&
+     rect_dino.x + rect_dino.width > rect_wall.x &&
+     rect_dino.y < rect_wall.y + rect_wall.height &&
+     rect_dino.y + rect_dino.height > rect_wall.y &&
      lsdinosalive.includes(i)) {
 
-      item.style.clip = ' rect(0px,600px,200px,200px)'
+      item.style.clip = 'rect(0px,600px,200px,200px)'
       item.style.top = '0px'
 
       // Checks if all dinos died and restart if so
@@ -253,8 +147,10 @@ async function CheckCollision(item, i) {
         highscore.innerHTML = 'HI:  ' + scorenr
         prevhigh = scorenr
   }
+
         x = false
         start = false
+
         Program()
       }
   }
@@ -266,7 +162,6 @@ async function moveSide() {
     start = true
     // Movement loop
     while (x) {
-
       while (frontlen <= 600 && start) {
         // Move line 1 to left and keep in same place
         floorpos -= speedmove
@@ -281,7 +176,7 @@ async function moveSide() {
         floor2.style.left = floorpos2 + 'px'
 
         RandomLandscape()
-        document.querySelectorAll('.rep').forEach((item, i) => {
+        both_dinos.forEach((item, i) => {
           CheckCollision(item, i)
         })
         await sleep(1)
@@ -306,7 +201,7 @@ async function moveSide() {
           floor2.style.clip = 'rect(0px,600px,200px,' + frontlen + 'px)'
 
           RandomLandscape()
-          document.querySelectorAll('.rep').forEach((item, i) => {
+          both_dinos.forEach((item, i) => {
             CheckCollision(item, i)
           })
           await sleep(1)
@@ -360,68 +255,106 @@ async function RandomLandscape() {
   if (moveob > 960) {random.style.clip = 'rect(0px,100px,100px,100px)'}
 }
 
-async function Up(type, who, y, details) {
-  for (let i = 0; i < type; i++) {
-    if (start && lsdinosalive.includes(y)) {
-
-      if (parseInt(random.style.left) < 450 && parseInt(random.style.left) > 450 - (random.querySelector('rect').getAttribute('width'))) {tf = true}
-
-      currentheight = parseInt(who.style.top)
-    who.style.top = (currentheight - 5) + 'px'
-    await sleep(10)
-    }
-  }
-  Down(type, who, y, details)
-}
-
-async function Down(type, who, y, details) {
-  await sleep(80)
-  for (let i = 0; i < type; i++) {
-    if (start && lsdinosalive.includes(y)) {
-
-      if (parseInt(random.style.left) < 450 && parseInt(random.style.left) > 450 - (random.querySelector('rect').getAttribute('width'))) {tf = true}
-
-      currentheight = parseInt(who.style.top)
-    who.style.top = (currentheight + 5) + 'px'
-    await sleep(10)
-    }
-  }
-
-  // let zeros = 0
-  // let ones = 0
-  // let allowed = true
-  // let allowed2 = true
-  // typejump_train.forEach((item, i) => {
-  //   if (item == 0) {zeros += 1}
-  //   else if (item == 1) {ones += 1}
-  // })
-  //
-  // if (zeros + 1 >= ones + 2) {allowed2 = false}
-  // if (ones + 1 >= zeros + 2) {allowed = false}
-
-  if (start && lsdinosalive.includes(y) && tf && details[1] > 450) {
-    //console.log('succesfull')
-    obstaclejumps.splice(obstaclejumps.indexOf(y), 1)
-    jump_train.push('['+details+']')
-    typejump_train.push(1)
-}
-else if (start && lsdinosalive.includes(y)) {
-  //console.log('unsuccesfull')
-  jump_train.push('['+details+']')
-  typejump_train.push(0)
-}
-
-  if (start && lsdinosalive.includes(y)) {
-  lsdinosdown.push(y)
-}
-
-// Restart all dino jumps when all down
-  if (lsdinosdown.length == lsdinosalive.length && start) {Neurons()}
-}
-
 moveSide()
 Score()
-Neurons()
 }
 
-Program()
+async function EventHandlers(diff) {
+class Dino {
+  constructor() {
+    this.height = 0;
+    this.jump_speed = 0;
+    this.dino_acc = 1
+  }
+  check_jump() {
+    if (this.jump_speed > 0 ){
+      this.do_jump();
+    } else {
+      this.dino_acc = 1;
+    }
+  }
+  do_jump() {
+    this.height = this.jump_speed + this.height;
+    this.jump_speed = this.jump_speed - this.dino_acc;
+    if (this.jump_speed < 0) { this.jump_speed = 0; }
+  }
+  jump(x) {
+    if (!this.isJumping()) { return false; }
+
+    this.dino_acc = 1;
+    this.jump_speed = x;
+    return true;
+  }
+  gravity() {
+    if (this.height > 0) {this.height -= 10}
+    if (this.height < 0) {this.height = 0}
+  }
+  isJumping() {
+    return this.height == 0 && this.jump_speed == 0;
+  }
+}
+
+let dino = new Dino()
+let dino_ai = new Dino()
+let player_jump_timer = 0
+let ai_jump_timer = 0
+let dino_ai_state = 0
+let player_count = null
+let ai_count = null
+let ai_refresh_rate = 20;
+
+function myMainLoop() {
+  dino.check_jump();
+  dino.gravity()
+
+  dino_ai.check_jump();
+  dino_ai.gravity()
+}
+
+function displayDinos() {
+  document.getElementById("dino").style.top = (400 - dino.height) + "px";
+
+  document.getElementById('dino_ai').style.top = (400 - dino_ai.height) + "px";
+}
+
+setInterval(myMainLoop, 20);
+setInterval(displayDinos, 20);
+
+document.addEventListener('keydown', async function (event) {
+  if (event.code == 'Space') {
+    if (!dino.jump(24)) {return}
+    //console.log('Time: ' + (moveob - 420) / speedmove)
+
+      // Timer
+    player_jump_timer = 0
+    player_count = setInterval(function(){
+      player_jump_timer++;
+      if (player_jump_timer > 30) {
+        dino.dino_acc = 0.6
+        clearInterval(player_count)
+      }
+    }, 1);
+}})
+
+document.addEventListener('keyup', async function (event) {
+  if (event.code == 'Space') {
+    clearInterval(player_count);
+    player_count = null;
+}})
+
+  if (diff == 'easy') {
+
+  }
+
+  else if (diff == 'medium') {
+
+  }
+
+  else if (diff == 'hard') {
+    // Every sec check jump
+    check_time = setInterval(function () {
+      if (((moveob - 420) / speedmove) > 50 && ((moveob - 420) / speedmove) < 70) {if (!dino_ai.jump(26)) {return}}
+    }, 1)
+  }
+
+}

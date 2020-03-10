@@ -6,13 +6,14 @@ from tensorflow.keras.models import load_model
 import ast
 import pickle
 import random
+import time
 
 def sigmoid(x):
     return 1.0/(1 + np.exp(-x))
 
 def shapeData():
     # Train file x
-    jump_train = open('datajump (13).csv', 'r')
+    jump_train = open('x_train.csv', 'r')
 
     rd1 =jump_train.read()
     rd1 = ast.literal_eval(rd1)
@@ -21,13 +22,31 @@ def shapeData():
     jump_train.close()
 
     # Train file y
-    jump_train = open('datatype (11).csv', 'r')
+    jump_train = open('y_train.csv', 'r')
 
     rd2 =jump_train.read()
     rd2 = ast.literal_eval(rd2)
     rd2 = list(rd2)
 
     jump_train.close()
+
+    # Test file x
+    jump_test = open('x_test.csv', 'r')
+
+    rd3 =jump_test.read()
+    rd3 = ast.literal_eval(rd3)
+    rd3 = list(rd3)
+
+    jump_test.close()
+
+    # Test file y
+    jump_test = open('y_test.csv', 'r')
+
+    rd4 = jump_test.read()
+    rd4 = ast.literal_eval(rd4)
+    rd4 = list(rd4)
+
+    jump_test.close()
 
     # Shuffle both list in same order
     list_shuffle = list(zip(rd1, rd2))
@@ -36,6 +55,8 @@ def shapeData():
 
     x_train = np.array(rd1)
     y_train = np.array(rd2)
+    x_test = np.array(rd3)
+    y_test = np.array(rd4)
 
     model = tf.keras.models.Sequential([
         tf.keras.layers.Flatten(),
@@ -54,27 +75,25 @@ def shapeData():
                   loss=loss_fn,
                   metrics=['accuracy'])
 
-    model.fit(x_train, y_train, epochs=50, batch_size=10)
+    model.fit(x_train, y_train, epochs=10, batch_size=10)
 
-    model.save('my.third.model')
+    model.save('test.fifth.model')
     del model
 
-    SaveLoad(x_train, y_train)
+    SaveLoad(x_train, y_train, x_test, y_test)
 
-def SaveLoad(x_train, y_train):
-    loaded_model = load_model('my.third.model')
+def SaveLoad(x_train, y_train, x_test, y_test):
+    loaded_model = load_model('test.fifth.model')
 
-    loaded_model.fit(x_train, y_train, epochs=50, batch_size=10)
-
-    loaded_model.summary()
+    loaded_model.fit(x_train, y_train, epochs=10, batch_size=10)
 
     wrong_predictions = 0
 
     # Predict loaded model
-    predictions = loaded_model.predict([x_train])
-    for i in range(500, 2000):
+    predictions = loaded_model.predict([x_test])
+    for i in range(200):
         prediction = np.argmax(predictions[i])
-        actual = y_train[i]
+        actual = y_test[i]
 
         print(prediction)
         print(actual)
